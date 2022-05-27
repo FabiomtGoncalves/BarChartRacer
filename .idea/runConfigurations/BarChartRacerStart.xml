@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BarChartRacerStart" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="pt.ipbeja.po2.chartracer.gui.BarChartRacerStart" />
+    <module name="17646_20481_BarChartRacer" />
+    <option name="VM_PARAMETERS" value="--module-path C:\javafx-sdk-17.0.2\lib --add-modules=javafx.controls" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
