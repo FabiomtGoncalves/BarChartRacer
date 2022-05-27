@@ -17,6 +17,7 @@ public class BarChartRacerStart extends Application {
     private ReadTxtFile readTxtFile;
     private Stage stage;
     private TextArea textArea;
+    private String path;
 
     public static void main(String[] args) {
         launch(args);
@@ -27,12 +28,11 @@ public class BarChartRacerStart extends Application {
         this.stage = primaryStage;
 
         FileChooser chooser = new FileChooser();
-        chooser.setInitialDirectory(new File("C:\\\\Users\\\\Fábio\\\\Desktop\\\\Escola\\\\3º Ano\\\\PO2\\\\GP4"));
+        chooser.setInitialDirectory(new File("C:\\Users\\Fábio\\Desktop\\Escola\\3º Ano\\PO2\\17646_20481_BarChartRacer\\src\\pt\\ipbeja\\po2\\chartracer"));
         chooser.setTitle("Escolha o Ficheiro");
-        chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
         File file = chooser.showOpenDialog(primaryStage);
-        String path = file.getAbsolutePath();
+        path = file.getAbsolutePath();
         this.readTxtFile = new ReadTxtFile(path);
 
         MenuBar menuBar = createMenu();
@@ -70,10 +70,11 @@ public class BarChartRacerStart extends Application {
 
         MenuItem biggestCities = new MenuItem("Maiores Cidades");
         MenuItem biggestCityInX = new MenuItem("Maior Cidade em Determinado Ano");
-        txtFile.getItems().addAll(biggestCities, biggestCityInX);
+        MenuItem population = new MenuItem("População de Determinada Cidade ao Longo dos Anos");
+        txtFile.getItems().addAll(biggestCities, biggestCityInX, population);
 
         biggestCities.setOnAction(event -> {
-
+            System.out.println(elBiggestPopulationCity());
         });
 
         biggestCityInX.setOnAction(event -> {
@@ -83,7 +84,29 @@ public class BarChartRacerStart extends Application {
             td.show();
         });
 
+        population.setOnAction(event -> {
+            TextInputDialog td = new TextInputDialog();
+            td.setHeaderText("Introduza o Nome da Cidade");
+            td.setTitle("Cidade");
+            td.show();
+        });
+
+
         return menuBar;
+    }
+
+    public String elBiggestPopulationCity()
+    {
+        String[][] cities = this.readTxtFile.readFileToStringArray2D(path, ",");
+        int population = 0;
+        String city = "";
+        for (String[] strings : cities) {
+            if (strings.length > 2 && Integer.parseInt(strings[3]) > population) {
+                population = Integer.parseInt(strings[3]);
+                city = "City: " + strings[1] + "\nPopulation: " + strings[3];
+            }
+        }
+        return city;
     }
 
 }
