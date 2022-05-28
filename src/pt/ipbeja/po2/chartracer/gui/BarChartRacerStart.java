@@ -6,11 +6,13 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
 public class BarChartRacerStart extends Application {
 
@@ -18,6 +20,9 @@ public class BarChartRacerStart extends Application {
     private Stage stage;
     private TextArea textArea;
     private String path;
+    private Integer size = 0;
+    BorderPane borderPane = new BorderPane();
+    private String ano;
 
     public static void main(String[] args) {
         launch(args);
@@ -37,9 +42,9 @@ public class BarChartRacerStart extends Application {
 
         MenuBar menuBar = createMenu();
 
-        BorderPane borderPane = new BorderPane();
         borderPane.setTop(menuBar);
         borderPane.setCenter(textArea);
+
         Scene scene = new Scene(borderPane, 200, 200);
         stage.setScene(scene);
 
@@ -74,14 +79,19 @@ public class BarChartRacerStart extends Application {
         txtFile.getItems().addAll(biggestCities, biggestCityInX, population);
 
         biggestCities.setOnAction(event -> {
-            System.out.println(elBiggestPopulationCity());
+            borderPane.setLeft(null);
+            borderPane.setLeft(elBiggestPopulationCity());
         });
 
         biggestCityInX.setOnAction(event -> {
+            borderPane.setLeft(null);
             TextInputDialog td = new TextInputDialog();
             td.setHeaderText("Introduza o Ano (1500 - 2018)");
             td.setTitle("Ano");
-            td.show();
+            Optional<String> result = td.showAndWait();
+            result.ifPresent(year -> ano = year);
+            borderPane.setLeft(specificYear());
+            //System.out.println(td.getContentText());
         });
 
         population.setOnAction(event -> {
@@ -95,18 +105,38 @@ public class BarChartRacerStart extends Application {
         return menuBar;
     }
 
-    public String elBiggestPopulationCity()
-    {
+    public Rectangle elBiggestPopulationCity() {
         String[][] cities = this.readTxtFile.readFileToStringArray2D(path, ",");
         int population = 0;
         String city = "";
+        Rectangle r = new Rectangle();
+        r.setX(50);
+        r.setY(50);
+        r.setHeight(100);
         for (String[] strings : cities) {
             if (strings.length > 2 && Integer.parseInt(strings[3]) > population) {
                 population = Integer.parseInt(strings[3]);
-                city = "City: " + strings[1] + "\nPopulation: " + strings[3];
+                r.setWidth(size = population / 100);
+                //city = "City: " + strings[1] + "\nPopulation: " + strings[3];
             }
         }
-        return city;
+        return r;
+    }
+
+    public Rectangle specificYear() {
+        String[][] cities = this.readTxtFile.readFileToStringArray2D(path, ",");
+        int population = 0;
+        Rectangle r = new Rectangle();
+        r.setX(300);
+        r.setY(10);
+        r.setHeight(100);
+        for (String[] city : cities) {
+            if (city.length > 2 && city[0].equals(ano) && Integer.parseInt(city[3]) > population) {
+                population = Integer.parseInt(city[3]);
+                r.setWidth(size = population / 100);
+            }
+        }
+        return r;
     }
 
 }
