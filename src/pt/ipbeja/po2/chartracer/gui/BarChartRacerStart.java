@@ -7,10 +7,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +24,7 @@ public class BarChartRacerStart extends Application {
     private Stage stage;
     private TextArea textArea;
     private String path;
-    private Integer size = 0;
+    private Integer size = 50;
     BorderPane borderPane = new BorderPane();
     private String ano;
 
@@ -79,8 +83,9 @@ public class BarChartRacerStart extends Application {
         txtFile.getItems().addAll(biggestCities, biggestCityInX, population);
 
         biggestCities.setOnAction(event -> {
-            borderPane.setLeft(null);
-            borderPane.setLeft(elBiggestPopulationCity());
+            //borderPane.setLeft(null);
+            elBiggestPopulationCity();
+            //borderPane.setLeft(elBiggestPopulationCity());
         });
 
         biggestCityInX.setOnAction(event -> {
@@ -105,22 +110,50 @@ public class BarChartRacerStart extends Application {
         return menuBar;
     }
 
-    public Rectangle elBiggestPopulationCity() {
+    public void elBiggestPopulationCity() {
         String[][] cities = this.readTxtFile.readFileToStringArray2D(path, ",");
-        int population = 0;
-        String city = "";
-        Rectangle r = new Rectangle();
-        r.setX(50);
-        r.setY(50);
-        r.setHeight(100);
-        for (String[] strings : cities) {
-            if (strings.length > 2 && Integer.parseInt(strings[3]) > population) {
-                population = Integer.parseInt(strings[3]);
-                r.setWidth(size = population / 100);
-                //city = "City: " + strings[1] + "\nPopulation: " + strings[3];
+        List<Integer> list = new ArrayList<Integer>();
+        List<String> cityNames = new ArrayList<String>();
+        List<String> country = new ArrayList<String>();
+        int[] population = new int[12];
+
+        for (int line = 0; line < cities.length; line++) {
+            if (cities[line].length > 2 /*&& Integer.parseInt(cities[line][3]) > population*/) {
+                list.add(Integer.parseInt(cities[line][3]));
+                if (list.size() == 12){
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i) > population[i]){
+                            population[i] = list.get(i);
+                        }
+                    }
+                    list.clear();
+                }
+                cityNames.add(cities[line][1]);
+                country.add(cities[line][2]);
             }
         }
-        return r;
+
+        /*System.out.println(Arrays.toString(asd));
+        Arrays.sort(asd);
+        System.out.println(Arrays.toString(asd));*/
+
+        for (int i = 0; i < population.length; i++) {
+            Rectangle rect = new Rectangle();
+            rect.setX(50);
+            rect.setY(size);
+            rect.setHeight(50);
+            rect.setWidth(population[i] / 100);
+            Text cityName = new Text();
+            cityName.setFont(new Font(20));
+            cityName.setX((population[i] / 100) + 50);
+            cityName.setY(size + 20);
+            cityName.setText("Cidade: " + cityNames.get(i) + "\n País: " + country.get(i)); //TODO - Países e cidades nao tao com os nomes certos
+            borderPane.getChildren().addAll(rect, cityName);
+            size += 70;
+        }
+
+        //System.out.println(listCopy);
+        //return r;
     }
 
     public Rectangle specificYear() {
