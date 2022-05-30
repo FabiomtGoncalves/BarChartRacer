@@ -3,6 +3,7 @@ package pt.ipbeja.po2.chartracer.gui;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.GZIPOutputStream;
 
 public class BarChartRacerStart extends Application {
 
@@ -26,7 +28,9 @@ public class BarChartRacerStart extends Application {
     private String path;
     private Integer size = 50;
     BorderPane borderPane = new BorderPane();
-    private String ano;
+    private String ano; //TODO mudar nome desta merda
+    private String year;
+    Group group = new Group();
 
     public static void main(String[] args) {
         launch(args);
@@ -47,12 +51,15 @@ public class BarChartRacerStart extends Application {
         MenuBar menuBar = createMenu();
 
         borderPane.setTop(menuBar);
-        borderPane.setCenter(textArea);
+        //borderPane.setCenter(textArea);
 
-        Scene scene = new Scene(borderPane, 200, 200);
+        borderPane.setLeft(group);
+
+        Scene scene = new Scene(borderPane, 800, 600);
         stage.setScene(scene);
 
-        //askSign();
+        //stage.setFullScreen(true);
+        stage.setMaximized(true);
 
         stage.show();
 
@@ -60,16 +67,20 @@ public class BarChartRacerStart extends Application {
 
     private MenuBar createMenu() {
         MenuBar menuBar = new MenuBar();
-        Menu menu = new Menu("Menu");
-        MenuButton btnClose = new MenuButton("Fechar");
+        Menu menu = new Menu("Bar Chart Racer");
+
         Menu close = new Menu("Fechar");
-        Menu txtFile = new Menu("Bar Chart Racer");
-        menu.getItems().addAll(txtFile);
-        menuBar.getMenus().addAll(menu, close);
 
-        txtFile.setOnAction(actionEvent -> {
+        Menu skin = new Menu("Skin");
+        MenuItem cor1 = new MenuItem("Cor1");
+        skin.getItems().addAll(cor1);
 
-        });
+        Menu data = new Menu("Data");
+        MenuItem generateFile = new MenuItem("Generate File");
+        data.getItems().addAll(generateFile);
+
+        //Menu txtFile = new Menu("Bar Chart Racer");
+        menuBar.getMenus().addAll(menu, skin, data, close);
 
         close.setOnAction(actionEvent -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -80,22 +91,23 @@ public class BarChartRacerStart extends Application {
         MenuItem biggestCities = new MenuItem("Maiores Cidades");
         MenuItem biggestCityInX = new MenuItem("Maior Cidade em Determinado Ano");
         MenuItem population = new MenuItem("População de Determinada Cidade ao Longo dos Anos");
-        txtFile.getItems().addAll(biggestCities, biggestCityInX, population);
+        menu.getItems().addAll(biggestCities, biggestCityInX, population);
 
         biggestCities.setOnAction(event -> {
-            //borderPane.setLeft(null);
+            group.getChildren().clear();
+            //borderPane2.getChildren().clear();
             elBiggestPopulationCity();
             //borderPane.setLeft(elBiggestPopulationCity());
         });
 
         biggestCityInX.setOnAction(event -> {
-            borderPane.setLeft(null);
+            group.getChildren().clear();
             TextInputDialog td = new TextInputDialog();
             td.setHeaderText("Introduza o Ano (1500 - 2018)");
             td.setTitle("Ano");
             Optional<String> result = td.showAndWait();
             result.ifPresent(year -> ano = year);
-            borderPane.setLeft(specificYear());
+            specificYear(ano);
             //System.out.println(td.getContentText());
         });
 
@@ -111,14 +123,30 @@ public class BarChartRacerStart extends Application {
     }
 
     public void elBiggestPopulationCity() {
+        size = 50;
+        Text title = new Text();
+        title.setFont(new Font(30));
+        title.setText("The most populous cities in the world from 1500 to 2018");
+        group.getChildren().add(title);
+
         String[][] cities = this.readTxtFile.readFileToStringArray2D(path, ",");
         List<Integer> list = new ArrayList<Integer>();
         List<String> cityNames = new ArrayList<String>();
         List<String> country = new ArrayList<String>();
         int[] population = new int[12];
 
+
         for (int line = 0; line < cities.length; line++) {
             if (cities[line].length > 2 /*&& Integer.parseInt(cities[line][3]) > population*/) {
+                /*if (cities[line][3] != year){
+                    Text txtYear = new Text();
+                    txtYear.setFont(new Font(40));
+                    txtYear.setX(300);
+                    txtYear.setY(70);
+                    year = cities[line][3];
+                    txtYear.setText("Ano: " + year);
+                    borderPane.getChildren().add(txtYear);
+                }*/
                 list.add(Integer.parseInt(cities[line][3]));
                 if (list.size() == 12){
                     for (int i = 0; i < list.size(); i++) {
@@ -133,10 +161,6 @@ public class BarChartRacerStart extends Application {
             }
         }
 
-        /*System.out.println(Arrays.toString(asd));
-        Arrays.sort(asd);
-        System.out.println(Arrays.toString(asd));*/
-
         for (int i = 0; i < population.length; i++) {
             Rectangle rect = new Rectangle();
             rect.setX(50);
@@ -148,7 +172,7 @@ public class BarChartRacerStart extends Application {
             cityName.setX((population[i] / 100) + 50);
             cityName.setY(size + 20);
             cityName.setText("Cidade: " + cityNames.get(i) + "\n País: " + country.get(i)); //TODO - Países e cidades nao tao com os nomes certos
-            borderPane.getChildren().addAll(rect, cityName);
+            group.getChildren().addAll(rect, cityName);
             size += 70;
         }
 
@@ -156,7 +180,7 @@ public class BarChartRacerStart extends Application {
         //return r;
     }
 
-    public Rectangle specificYear() {
+    public void specificYear(String ano) {
         String[][] cities = this.readTxtFile.readFileToStringArray2D(path, ",");
         int population = 0;
         Rectangle r = new Rectangle();
@@ -169,7 +193,9 @@ public class BarChartRacerStart extends Application {
                 r.setWidth(size = population / 100);
             }
         }
-        return r;
+
+        group.getChildren().addAll(r);
+
     }
 
 }
