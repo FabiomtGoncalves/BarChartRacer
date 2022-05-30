@@ -1,5 +1,6 @@
 package pt.ipbeja.po2.chartracer.gui;
 
+import javafx.animation.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -7,17 +8,21 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
+import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 
 public class BarChartRacerStart extends Application {
@@ -62,6 +67,22 @@ public class BarChartRacerStart extends Application {
         stage.setMaximized(true);
 
         stage.show();
+
+
+        /*Rectangle rect = new Rectangle ();
+        rect.setWidth(150);
+        rect.setHeight(50);
+        rect.setFill(Color.VIOLET);
+
+        ScaleTransition st = new ScaleTransition(Duration.millis(4000), rect);
+        st.setByX(1.5f);
+        //st.setCycleCount(4);
+        //st.setAutoReverse(true);
+
+        st.play();
+
+        group.getChildren().addAll(rect);*/
+
 
     }
 
@@ -131,10 +152,38 @@ public class BarChartRacerStart extends Application {
 
         String[][] cities = this.readTxtFile.readFileToStringArray2D(path, ",");
         List<Integer> list = new ArrayList<Integer>();
-        List<String> cityNames = new ArrayList<String>();
-        List<String> country = new ArrayList<String>();
+        List<String> listCityNames = new ArrayList<String>();
+        String[] cityNames = new String[12];
         int[] population = new int[12];
+        Rectangle[] rectArray = new Rectangle[12];
+        int tempPop = 0;
+        String tempCity = "";
 
+        Rectangle rect = new Rectangle();
+        rect.setX(50);
+        rect.setY(50);
+        rect.setHeight(50);
+        rect.setWidth(size);
+        group.getChildren().addAll(rect);
+        //load(rect);
+
+        /*FadeTransition ft = new FadeTransition(Duration.millis(3000), rect);
+        ft.setFromValue(1.0);
+        ft.setToValue(0.1);
+        ft.setCycleCount(Timeline.INDEFINITE);
+        ft.setAutoReverse(true);
+        ft.play();*/
+
+        for (int i = 0; i < population.length; i++) {
+            Rectangle rectLix = new Rectangle();
+            rectLix.setX(50);
+            rectLix.setY(size);
+            rectLix.setHeight(50);
+            rectLix.setWidth(100);
+            rectArray[i] = rectLix;
+            group.getChildren().addAll(rectLix);
+            size += 70;
+        }
 
         for (int line = 0; line < cities.length; line++) {
             if (cities[line].length > 2 /*&& Integer.parseInt(cities[line][3]) > population*/) {
@@ -147,21 +196,39 @@ public class BarChartRacerStart extends Application {
                     txtYear.setText("Ano: " + year);
                     borderPane.getChildren().add(txtYear);
                 }*/
+                tempPop = Integer.parseInt(cities[line][3]);
+                tempCity = cities[line][1];
                 list.add(Integer.parseInt(cities[line][3]));
-                if (list.size() == 12){
-                    for (int i = 0; i < list.size(); i++) {
+                listCityNames.add(cities[line][1]);
+
+                for (int i = 0; i < population.length; i++) {
+                    if (tempPop > population[i] && tempCity != cityNames[i]){
+                        rectArray[i].setWidth(tempPop / 100);
+                        ScaleTransition st = new ScaleTransition(Duration.millis(4000), rectArray[i]);
+                        st.setByX(1);
+                        st.play();
+                        population[i] = tempPop;
+                        cityNames[i] = tempCity;
+                        break;
+                    }
+                }
+
+                /*if (list.size() == 12){
+                    for (int i = 0; i < population.length; i++) {
                         if (list.get(i) > population[i]){
                             population[i] = list.get(i);
+                            cityNames[i] = listCityNames.get(i);
                         }
                     }
                     list.clear();
-                }
-                cityNames.add(cities[line][1]);
-                country.add(cities[line][2]);
+                    listCityNames.clear();
+                }*/
+                //cityNames.add(cities[line][1]);
+                //country.add(cities[line][2]);
             }
         }
 
-        for (int i = 0; i < population.length; i++) {
+        /*for (int i = 0; i < population.length; i++) {
             Rectangle rect = new Rectangle();
             rect.setX(50);
             rect.setY(size);
@@ -170,11 +237,14 @@ public class BarChartRacerStart extends Application {
             Text cityName = new Text();
             cityName.setFont(new Font(20));
             cityName.setX((population[i] / 100) + 50);
-            cityName.setY(size + 20);
-            cityName.setText("Cidade: " + cityNames.get(i) + "\n País: " + country.get(i)); //TODO - Países e cidades nao tao com os nomes certos
+            cityName.setY(size + 30);
+            cityName.setText(cityNames[i]);
             group.getChildren().addAll(rect, cityName);
             size += 70;
-        }
+        }*/
+
+        System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
+        System.out.println("Rects lix: " + Arrays.toString(rectArray));
 
         //System.out.println(listCopy);
         //return r;
@@ -197,5 +267,21 @@ public class BarChartRacerStart extends Application {
         group.getChildren().addAll(r);
 
     }
+
+    private void load(Rectangle rectangle){
+        int counter = 0;
+
+        while (counter <= 100){
+            rectangle.setWidth(counter);
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+            counter += 1;
+            System.out.println("SIZE" + rectangle.getWidth());
+        }
+    }
+
 
 }
