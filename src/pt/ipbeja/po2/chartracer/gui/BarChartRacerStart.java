@@ -31,6 +31,7 @@ public class BarChartRacerStart extends Application {
     private String ano; //TODO mudar nome desta merda
     private String year;
     Group group = new Group();
+    //teste
 
     public static void main(String[] args) {
         launch(args);
@@ -41,7 +42,7 @@ public class BarChartRacerStart extends Application {
         this.stage = primaryStage;
 
         FileChooser chooser = new FileChooser();
-        chooser.setInitialDirectory(new File("C:\\Users\\Fábio\\Desktop\\Escola\\3º Ano\\PO2\\17646_20481_BarChartRacer\\src\\pt\\ipbeja\\po2\\chartracer"));
+        //chooser.setInitialDirectory(new File("C:\\Users\\Fábio\\Desktop\\Escola\\3º Ano\\PO2\\17646_20481_BarChartRacer\\src\\pt\\ipbeja\\po2\\chartracer"));
         chooser.setTitle("Escolha o Ficheiro");
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
         File file = chooser.showOpenDialog(primaryStage);
