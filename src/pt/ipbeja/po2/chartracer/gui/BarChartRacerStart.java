@@ -69,21 +69,6 @@ public class BarChartRacerStart extends Application {
         stage.show();
 
 
-        /*Rectangle rect = new Rectangle ();
-        rect.setWidth(150);
-        rect.setHeight(50);
-        rect.setFill(Color.VIOLET);
-
-        ScaleTransition st = new ScaleTransition(Duration.millis(4000), rect);
-        st.setByX(1.5f);
-        //st.setCycleCount(4);
-        //st.setAutoReverse(true);
-
-        st.play();
-
-        group.getChildren().addAll(rect);*/
-
-
     }
 
     private MenuBar createMenu() {
@@ -155,17 +140,12 @@ public class BarChartRacerStart extends Application {
         List<String> listCityNames = new ArrayList<String>();
         String[] cityNames = new String[12];
         int[] population = new int[12];
+
         Rectangle[] rectArray = new Rectangle[12];
+        Text[] textArray = new Text[12];
+
         int tempPop = 0;
         String tempCity = "";
-
-        Rectangle rect = new Rectangle();
-        rect.setX(50);
-        rect.setY(50);
-        rect.setHeight(50);
-        rect.setWidth(size);
-        group.getChildren().addAll(rect);
-        //load(rect);
 
         /*FadeTransition ft = new FadeTransition(Duration.millis(3000), rect);
         ft.setFromValue(1.0);
@@ -176,16 +156,20 @@ public class BarChartRacerStart extends Application {
 
         for (int i = 0; i < population.length; i++) {
             Rectangle rectLix = new Rectangle();
-            rectLix.setX(50);
             rectLix.setY(size);
             rectLix.setHeight(50);
-            rectLix.setWidth(100);
+            rectLix.setFill(Color.VIOLET);
+            Text textLix = new Text();
+            textLix.setFont(new Font(20));
+            textLix.setY(size + 30);
+            textLix.setText(cityNames[i]);
+            textArray[i] = textLix;
             rectArray[i] = rectLix;
-            group.getChildren().addAll(rectLix);
+            group.getChildren().addAll(rectLix, textLix);
             size += 70;
         }
 
-        for (int line = 0; line < cities.length; line++) {
+        for (int line = 0; line < cities.length; line++) { //TODO - para mostrar as cidades de forma mais lenta e ir mudando o for tem de ser mais lento Thread.sleep?
             if (cities[line].length > 2 /*&& Integer.parseInt(cities[line][3]) > population*/) {
                 /*if (cities[line][3] != year){
                     Text txtYear = new Text();
@@ -204,9 +188,17 @@ public class BarChartRacerStart extends Application {
                 for (int i = 0; i < population.length; i++) {
                     if (tempPop > population[i] && tempCity != cityNames[i]){
                         rectArray[i].setWidth(tempPop / 100);
+                        textArray[i].setText(tempCity);
+                        textArray[i].setX(rectArray[i].getWidth());
                         ScaleTransition st = new ScaleTransition(Duration.millis(4000), rectArray[i]);
                         st.setByX(1);
                         st.play();
+                        TranslateTransition translate = new TranslateTransition();
+                        translate.setNode(textArray[i]);
+                        translate.setDuration(Duration.millis(4000));
+                        translate.setByX(rectArray[i].getX());
+                        translate.play();
+
                         population[i] = tempPop;
                         cityNames[i] = tempCity;
                         break;
@@ -245,6 +237,7 @@ public class BarChartRacerStart extends Application {
 
         System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
         System.out.println("Rects lix: " + Arrays.toString(rectArray));
+        System.out.println("Text lix: " + Arrays.toString(textArray));
 
         //System.out.println(listCopy);
         //return r;
@@ -266,21 +259,6 @@ public class BarChartRacerStart extends Application {
 
         group.getChildren().addAll(r);
 
-    }
-
-    private void load(Rectangle rectangle){
-        int counter = 0;
-
-        while (counter <= 100){
-            rectangle.setWidth(counter);
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e){
-                e.printStackTrace();
-            }
-            counter += 1;
-            System.out.println("SIZE" + rectangle.getWidth());
-        }
     }
 
 
