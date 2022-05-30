@@ -31,7 +31,6 @@ public class BarChartRacerStart extends Application {
     private String ano; //TODO mudar nome desta merda
     private String year;
     Group group = new Group();
-    //teste
 
     public static void main(String[] args) {
         launch(args);
