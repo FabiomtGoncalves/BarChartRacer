@@ -1,10 +1,6 @@
 package pt.ipbeja.po2.chartracer.gui;
 
-import javafx.scene.shape.Path;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.net.URL;
 
 import static org.junit.jupiter.api.Assertions.*;
 
