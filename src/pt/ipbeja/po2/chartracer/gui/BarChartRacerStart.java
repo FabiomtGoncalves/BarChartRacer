@@ -2,13 +2,10 @@ package pt.ipbeja.po2.chartracer.gui;
 
 import javafx.animation.*;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -17,28 +14,24 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import pt.ipbeja.po2.chartracer.model.Bar;
 import pt.ipbeja.po2.chartracer.model.CityName;
-
-import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.zip.GZIPOutputStream;
 
 public class BarChartRacerStart extends Application {
 
+    private Bar bar;
+    private CityName cityName;
     private ReadTxtFile readTxtFile;
     private Stage stage;
     private String path;
-    private Integer size = 50;
+    private Integer positionY = 50;
     private BorderPane borderPane = new BorderPane();
-    private String ano; //TODO mudar nome desta merda
-    private String year;
+    private String year; //TODO mudar nome desta merda
     private Group group = new Group();
-    private Bar bar;
-    private CityName cityName;
+    private final int animationTime = 20000;
 
     public static void main(String[] args) {
         launch(args);
@@ -59,7 +52,6 @@ public class BarChartRacerStart extends Application {
         MenuBar menuBar = createMenu();
 
         borderPane.setTop(menuBar);
-        //borderPane.setCenter(textArea);
 
         borderPane.setLeft(group);
 
@@ -115,8 +107,8 @@ public class BarChartRacerStart extends Application {
             td.setHeaderText("Introduza o Ano (1500 - 2018)");
             td.setTitle("Ano");
             Optional<String> result = td.showAndWait();
-            result.ifPresent(year -> ano = year);
-            specificYear(ano);
+            result.ifPresent(year -> this.year = year);
+            specificYear(year);
             //System.out.println(td.getContentText());
         });
 
@@ -132,7 +124,7 @@ public class BarChartRacerStart extends Application {
     }
 
     public void elBiggestPopulationCity() {
-        size = 50;
+        positionY = 50;
         Text title = new Text();
         title.setFont(new Font(30));
         title.setText("The most populous cities in the world from 1500 to 2018");
@@ -158,12 +150,12 @@ public class BarChartRacerStart extends Application {
         ft.play();*/
 
         for (int i = 0; i < population.length; i++) {
-            bar = new Bar(size);
-            cityName = new CityName(cityNames[i], size+30);
+            bar = new Bar(positionY);
+            cityName = new CityName(cityNames[i], positionY+30);
             textArray[i] = cityName;
             rectArray[i] = bar;
             group.getChildren().addAll(bar, cityName);
-            size += 70;
+            positionY += 70;
         }
 
         for (int line = 0; line < cities.length; line++) { //TODO - para mostrar as cidades de forma mais lenta e ir mudando o for tem de ser mais lento Thread.sleep?
@@ -187,14 +179,20 @@ public class BarChartRacerStart extends Application {
                         rectArray[i].setWidth(tempPop / 100);
                         textArray[i].setText(tempCity);
                         textArray[i].setX(rectArray[i].getWidth());
-                        ScaleTransition st = new ScaleTransition(Duration.millis(4000), rectArray[i]);
-                        st.setByX(1);
-                        st.play();
-                        TranslateTransition translate = new TranslateTransition();
+
+                        TranslateTransition trans = new TranslateTransition(Duration.millis(animationTime), rectArray[i]);
+                        trans.setFromX(rectArray[i].getX());
+                        trans.setToX(rectArray[i].getWidth());
+                        trans.play();
+
+                        /*ScaleTransition st = new ScaleTransition(Duration.millis(animationTime), rectArray[i]);
+                        st.setByX(100);
+                        st.play();*/
+                        /*TranslateTransition translate = new TranslateTransition();
                         translate.setNode(textArray[i]);
-                        translate.setDuration(Duration.millis(4000));
+                        translate.setDuration(Duration.millis(animationTime));
                         translate.setByX(rectArray[i].getX());
-                        translate.play();
+                        translate.play();*/
 
                         population[i] = tempPop;
                         cityNames[i] = tempCity;
@@ -250,7 +248,7 @@ public class BarChartRacerStart extends Application {
         for (String[] city : cities) {
             if (city.length > 2 && city[0].equals(ano) && Integer.parseInt(city[3]) > population) {
                 population = Integer.parseInt(city[3]);
-                r.setWidth(size = population / 100);
+                r.setWidth(positionY = population / 100);
             }
         }
 

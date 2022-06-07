@@ -8,9 +8,9 @@ public class Bar extends Rectangle {
     private final int height = 50;
 
     public Bar(int positionY){
-        setY(positionY);
-        setHeight(this.height);
-        setFill(Color.VIOLET);
+        this.setY(positionY);
+        this.setHeight(this.height);
+        this.setFill(Color.VIOLET);
     }
 
 }
