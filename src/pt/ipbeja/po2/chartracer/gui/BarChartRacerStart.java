@@ -15,6 +15,8 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import pt.ipbeja.po2.chartracer.model.Bar;
+import pt.ipbeja.po2.chartracer.model.CityName;
 
 import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.io.File;
@@ -29,13 +31,14 @@ public class BarChartRacerStart extends Application {
 
     private ReadTxtFile readTxtFile;
     private Stage stage;
-    private TextArea textArea;
     private String path;
     private Integer size = 50;
-    BorderPane borderPane = new BorderPane();
+    private BorderPane borderPane = new BorderPane();
     private String ano; //TODO mudar nome desta merda
     private String year;
-    Group group = new Group();
+    private Group group = new Group();
+    private Bar bar;
+    private CityName cityName;
 
     public static void main(String[] args) {
         launch(args);
@@ -155,17 +158,11 @@ public class BarChartRacerStart extends Application {
         ft.play();*/
 
         for (int i = 0; i < population.length; i++) {
-            Rectangle rectLix = new Rectangle();
-            rectLix.setY(size);
-            rectLix.setHeight(50);
-            rectLix.setFill(Color.VIOLET);
-            Text textLix = new Text();
-            textLix.setFont(new Font(20));
-            textLix.setY(size + 30);
-            textLix.setText(cityNames[i]);
-            textArray[i] = textLix;
-            rectArray[i] = rectLix;
-            group.getChildren().addAll(rectLix, textLix);
+            bar = new Bar(size);
+            cityName = new CityName(cityNames[i], size+30);
+            textArray[i] = cityName;
+            rectArray[i] = bar;
+            group.getChildren().addAll(bar, cityName);
             size += 70;
         }
 
