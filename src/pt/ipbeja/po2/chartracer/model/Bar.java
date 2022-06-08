@@ -3,31 +3,26 @@ package pt.ipbeja.po2.chartracer.model;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class Bar extends Rectangle implements Comparable {
+public class Bar extends Rectangle implements Comparable<Rectangle> {
 
     private final int height = 50;
-    private int width;
 
-    public Bar(int positionY){
+    public Bar(int positionY, int width){
         this.setY(positionY);
         this.setHeight(this.height);
         this.setFill(Color.VIOLET);
         this.setWidth(width);
     }
 
-    public int getRectWidth() {
-        return width;
-    }
 
     @Override
-    public int compareTo(Object o) {
-        Bar other = (Bar) o;
+    public int compareTo(Rectangle bar) {
 
-        if(getRectWidth() > other.getRectWidth()){
+        if(this.getWidth() > bar.getWidth()){
             return 1;
         }
 
-        else if(getRectWidth() < other.getRectWidth()){
+        else if(this.getWidth() < bar.getWidth()){
             return -1;
         }
         else{

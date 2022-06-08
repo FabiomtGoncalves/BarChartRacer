@@ -23,6 +23,7 @@ import java.util.Optional;
 public class BarChartRacerStart extends Application {
 
     private Bar bar;
+    private Bar bar2;
     private CityName cityName;
     private ReadTxtFile readTxtFile;
     private Stage stage;
@@ -67,7 +68,7 @@ public class BarChartRacerStart extends Application {
 
         stage.show();
 
-        Bar b1 = new Bar(positionY);
+        /*Bar b1 = new Bar(positionY);
         Bar b2 = new Bar(positionY);
 
         System.out.println("Comparação: " + b1.compareTo(b2));
@@ -159,7 +160,7 @@ public class BarChartRacerStart extends Application {
 
 
         for (int i = 0; i < population.length; i++) {
-            bar = new Bar(positionY);
+            bar = new Bar(positionY, 0);
 
             cityName = new CityName(cityNames[i], positionY+30);
             textArray[i] = cityName;
@@ -172,14 +173,23 @@ public class BarChartRacerStart extends Application {
             if (cities[line].length > 2 /*&& Integer.parseInt(cities[line][3]) > population*/) {
 
                 tempPop = Integer.parseInt(cities[line][3]);
+
+                bar2 = new Bar(positionY, tempPop);
+
                 tempCity = cities[line][1];
                 list.add(Integer.parseInt(cities[line][3]));
                 listCityNames.add(cities[line][1]);
 
                 for (int i = 0; i < population.length; i++) {
-                    if (tempPop > population[i] && tempCity != cityNames[i]){
 
-                        rectArray[i].setWidth(tempPop / 100);
+                    System.out.println("Comparação: " + bar2.compareTo(rectArray[i]));
+                    int result = bar2.compareTo(rectArray[i]);
+
+
+                    //if (tempPop > population[i] && tempCity != cityNames[i]){
+
+                    if (result > 0){
+                        rectArray[i].setWidth(bar2.getWidth());
                         textArray[i].setText(tempCity);
                         textArray[i].setX(rectArray[i].getWidth());
 
@@ -205,8 +215,8 @@ public class BarChartRacerStart extends Application {
             }
         }
 
-        /*System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
-        System.out.println("Rects lix: " + Arrays.toString(rectArray));
+        System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
+        /*System.out.println("Rects lix: " + Arrays.toString(rectArray));
         System.out.println("Text lix: " + Arrays.toString(textArray));*/
 
     }
