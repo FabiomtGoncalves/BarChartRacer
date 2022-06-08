@@ -1,4 +1,4 @@
-package pt.ipbeja.po2.chartracer.gui;
+package pt.ipbeja.po2.chartracer.model;
 
 import javafx.scene.control.Alert;
 

@@ -12,8 +12,8 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import pt.ipbeja.po2.chartracer.model.Bar;
-import pt.ipbeja.po2.chartracer.model.CityName;
+import pt.ipbeja.po2.chartracer.model.ReadTxtFile;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -145,7 +145,7 @@ public class BarChartRacerStart extends Application {
         title.setText("The most populous cities in the world from 1500 to 2018");
         group.getChildren().add(title);
 
-        String[][] cities = this.readTxtFile.readFileToStringArray2D(path, ",");
+        String[][] cities = ReadTxtFile.readFileToStringArray2D(path, ",");
         List<Integer> list = new ArrayList<Integer>();
         List<String> listCityNames = new ArrayList<String>();
         String[] cityNames = new String[12];
@@ -212,7 +212,7 @@ public class BarChartRacerStart extends Application {
     }
 
     public void specificYear(String ano) {
-        String[][] cities = this.readTxtFile.readFileToStringArray2D(path, ",");
+        String[][] cities = ReadTxtFile.readFileToStringArray2D(path, ",");
         int population = 0;
         Rectangle r = new Rectangle();
         r.setX(300);

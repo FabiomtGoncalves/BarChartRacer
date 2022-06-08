@@ -1,4 +1,4 @@
-package pt.ipbeja.po2.chartracer.model;
+package pt.ipbeja.po2.chartracer.gui;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
