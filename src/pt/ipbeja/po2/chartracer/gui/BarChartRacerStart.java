@@ -181,15 +181,29 @@ public class BarChartRacerStart extends Application {
                 listCityNames.add(cities[line][1]);
 
                 for (int i = 0; i < population.length; i++) {
-
+                    int result = 0;
                     System.out.println("Comparação: " + bar2.compareTo(rectArray[i]));
-                    int result = bar2.compareTo(rectArray[i]);
+                     // TODO for que corra o array de rectangulos, variavel q vê o valor mais pequeno, e esse é o trocado
 
 
                     //if (tempPop > population[i] && tempCity != cityNames[i]){
 
+                    double tamanho = 0;
+
+                    for (int j = 0; j < rectArray.length; j++) {
+                        if(rectArray[j].getWidth() == 0){
+                            result = 1;
+                            break;
+                        }
+                        else{
+                            result = bar2.compareTo(rectArray[j]);
+                        }
+                    }
+
+
+
                     if (result > 0){
-                        rectArray[i].setWidth(bar2.getWidth());
+                        rectArray[i].setWidth(bar2.getWidth() / 100);
                         textArray[i].setText(tempCity);
                         textArray[i].setX(rectArray[i].getWidth());
 
