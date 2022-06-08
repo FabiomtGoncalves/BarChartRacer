@@ -32,6 +32,10 @@ public class BarChartRacerStart extends Application {
     private String year; //TODO mudar nome desta merda
     private Group group = new Group();
     private final int animationTime = 20000;
+    private final int reset = 50;
+    private final int sceneW = 800;
+    private final int sceneH = 600;
+
 
     public static void main(String[] args) {
         launch(args);
@@ -55,7 +59,7 @@ public class BarChartRacerStart extends Application {
 
         borderPane.setLeft(group);
 
-        Scene scene = new Scene(borderPane, 800, 600);
+        Scene scene = new Scene(borderPane, sceneW, sceneH);
         stage.setScene(scene);
 
         //stage.setFullScreen(true);
@@ -124,7 +128,7 @@ public class BarChartRacerStart extends Application {
     }
 
     public void elBiggestPopulationCity() {
-        positionY = 50;
+        positionY = reset;
         Text title = new Text();
         title.setFont(new Font(30));
         title.setText("The most populous cities in the world from 1500 to 2018");
