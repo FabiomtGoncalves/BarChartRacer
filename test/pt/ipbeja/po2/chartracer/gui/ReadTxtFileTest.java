@@ -1,6 +1,7 @@
 package pt.ipbeja.po2.chartracer.gui;
 
 import org.junit.jupiter.api.Test;
+import pt.ipbeja.po2.chartracer.model.ReadTxtFile;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,10 +14,10 @@ class ReadTxtFileTest {
         assertEquals(file[5][2], "China");
         assertEquals(file[5][3], "672");
         assertEquals(file[5][4], "East Asia");
-        assertEquals(file[305][0], "1521");
-        assertEquals(file[305][1], "Nanjing");
-        assertEquals(file[305][2], "China");
-        assertEquals(file[305][3], "153");
-        assertEquals(file[305][4], "East Asia");
+        assertEquals(file[4797][0], "1842");
+        assertEquals(file[4797][1], "London");
+        assertEquals(file[4797][2], "United Kingdom");
+        assertEquals(file[4797][3], "1990");
+        assertEquals(file[4797][4], "Europe");
     }
 }
