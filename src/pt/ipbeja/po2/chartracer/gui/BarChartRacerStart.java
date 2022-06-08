@@ -67,6 +67,21 @@ public class BarChartRacerStart extends Application {
 
         stage.show();
 
+        Bar b1 = new Bar(positionY);
+        Bar b2 = new Bar(positionY);
+
+        System.out.println("Comparação: " + b1.compareTo(b2));
+        int result = b1.compareTo(b2);
+
+                        /*if (result < 0){
+                            System.out.println("b1" + b1.compareTo(b2));
+                        }
+                        else if (result > 0) {
+                            System.out.println("Comparação: " + b1.compareTo(b2));
+                        }
+                        else{
+                            System.out.println("Comparação: " + b1.compareTo(b2));
+                        }*/
 
     }
 
@@ -145,6 +160,7 @@ public class BarChartRacerStart extends Application {
 
         for (int i = 0; i < population.length; i++) {
             bar = new Bar(positionY);
+
             cityName = new CityName(cityNames[i], positionY+30);
             textArray[i] = cityName;
             rectArray[i] = bar;
@@ -162,6 +178,7 @@ public class BarChartRacerStart extends Application {
 
                 for (int i = 0; i < population.length; i++) {
                     if (tempPop > population[i] && tempCity != cityNames[i]){
+
                         rectArray[i].setWidth(tempPop / 100);
                         textArray[i].setText(tempCity);
                         textArray[i].setX(rectArray[i].getWidth());
@@ -188,9 +205,9 @@ public class BarChartRacerStart extends Application {
             }
         }
 
-        System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
+        /*System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
         System.out.println("Rects lix: " + Arrays.toString(rectArray));
-        System.out.println("Text lix: " + Arrays.toString(textArray));
+        System.out.println("Text lix: " + Arrays.toString(textArray));*/
 
     }
 
