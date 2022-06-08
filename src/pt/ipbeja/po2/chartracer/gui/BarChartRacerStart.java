@@ -84,7 +84,6 @@ public class BarChartRacerStart extends Application {
         MenuItem generateFile = new MenuItem("Generate File");
         data.getItems().addAll(generateFile);
 
-        //Menu txtFile = new Menu("Bar Chart Racer");
         menuBar.getMenus().addAll(menu, skin, data, close);
 
         close.setOnAction(actionEvent -> {
@@ -100,9 +99,7 @@ public class BarChartRacerStart extends Application {
 
         biggestCities.setOnAction(event -> {
             group.getChildren().clear();
-            //borderPane2.getChildren().clear();
             elBiggestPopulationCity();
-            //borderPane.setLeft(elBiggestPopulationCity());
         });
 
         biggestCityInX.setOnAction(event -> {
@@ -113,7 +110,6 @@ public class BarChartRacerStart extends Application {
             Optional<String> result = td.showAndWait();
             result.ifPresent(year -> this.year = year);
             specificYear(year);
-            //System.out.println(td.getContentText());
         });
 
         population.setOnAction(event -> {
@@ -146,12 +142,6 @@ public class BarChartRacerStart extends Application {
         int tempPop = 0;
         String tempCity = "";
 
-        /*FadeTransition ft = new FadeTransition(Duration.millis(3000), rect);
-        ft.setFromValue(1.0);
-        ft.setToValue(0.1);
-        ft.setCycleCount(Timeline.INDEFINITE);
-        ft.setAutoReverse(true);
-        ft.play();*/
 
         for (int i = 0; i < population.length; i++) {
             bar = new Bar(positionY);
@@ -164,15 +154,7 @@ public class BarChartRacerStart extends Application {
 
         for (int line = 0; line < cities.length; line++) { //TODO - para mostrar as cidades de forma mais lenta e ir mudando o for tem de ser mais lento Thread.sleep?
             if (cities[line].length > 2 /*&& Integer.parseInt(cities[line][3]) > population*/) {
-                /*if (cities[line][3] != year){
-                    Text txtYear = new Text();
-                    txtYear.setFont(new Font(40));
-                    txtYear.setX(300);
-                    txtYear.setY(70);
-                    year = cities[line][3];
-                    txtYear.setText("Ano: " + year);
-                    borderPane.getChildren().add(txtYear);
-                }*/
+
                 tempPop = Integer.parseInt(cities[line][3]);
                 tempCity = cities[line][1];
                 list.add(Integer.parseInt(cities[line][3]));
@@ -203,43 +185,13 @@ public class BarChartRacerStart extends Application {
                         break;
                     }
                 }
-
-                /*if (list.size() == 12){
-                    for (int i = 0; i < population.length; i++) {
-                        if (list.get(i) > population[i]){
-                            population[i] = list.get(i);
-                            cityNames[i] = listCityNames.get(i);
-                        }
-                    }
-                    list.clear();
-                    listCityNames.clear();
-                }*/
-                //cityNames.add(cities[line][1]);
-                //country.add(cities[line][2]);
             }
         }
-
-        /*for (int i = 0; i < population.length; i++) {
-            Rectangle rect = new Rectangle();
-            rect.setX(50);
-            rect.setY(size);
-            rect.setHeight(50);
-            rect.setWidth(population[i] / 100);
-            Text cityName = new Text();
-            cityName.setFont(new Font(20));
-            cityName.setX((population[i] / 100) + 50);
-            cityName.setY(size + 30);
-            cityName.setText(cityNames[i]);
-            group.getChildren().addAll(rect, cityName);
-            size += 70;
-        }*/
 
         System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
         System.out.println("Rects lix: " + Arrays.toString(rectArray));
         System.out.println("Text lix: " + Arrays.toString(textArray));
 
-        //System.out.println(listCopy);
-        //return r;
     }
 
     public void specificYear(String ano) {
