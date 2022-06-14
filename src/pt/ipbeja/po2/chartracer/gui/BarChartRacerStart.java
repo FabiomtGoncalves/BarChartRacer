@@ -36,7 +36,7 @@ public class BarChartRacerStart extends Application {
     private final int reset = 50;
     private final int sceneW = 800;
     private final int sceneH = 600;
-
+    int result;
 
     public static void main(String[] args) {
         launch(args);
@@ -172,7 +172,7 @@ public class BarChartRacerStart extends Application {
         for (int line = 0; line < cities.length; line++) { //TODO - para mostrar as cidades de forma mais lenta e ir mudando o for tem de ser mais lento Thread.sleep?
             if (cities[line].length > 2 /*&& Integer.parseInt(cities[line][3]) > population*/) {
 
-                tempPop = Integer.parseInt(cities[line][3]);
+                tempPop = Integer.parseInt(cities[line][3]) / 100;
 
                 bar2 = new Bar(positionY, tempPop);
 
@@ -183,15 +183,36 @@ public class BarChartRacerStart extends Application {
                 for (int i = 0; i < population.length; i++) {
 
                     System.out.println("Comparação: " + bar2.compareTo(rectArray[i]));
-                    int result = bar2.compareTo(rectArray[i]);
 
+                    double min = 0;
+                    int position = 0;
+                    double first = rectArray[0].getWidth();
+
+                    /*for (int j = 0; j < rectArray.length; j++) {
+                        if(min <= rectArray[i].getWidth()){
+                            position = j;
+                            min = rectArray[j].getWidth();
+                        }
+                    }*/
+
+                    /*for (int j = 0; j < rectArray.length; j++) {
+                        if(first >= ){
+                            position = j;
+                            min = rectArray[j].getWidth();
+                        }
+                    }*/
+
+
+                    result = bar2.compareTo(rectArray[i]);
 
                     //if (tempPop > population[i] && tempCity != cityNames[i]){
 
-                    if (result > 0){
+                    List<String> intList = new ArrayList<>(Arrays.asList(cityNames));
+
+                    if (result > 0 && !intList.contains(tempCity)){
                         rectArray[i].setWidth(bar2.getWidth());
                         textArray[i].setText(tempCity);
-                        textArray[i].setX(rectArray[i].getWidth());
+                        textArray[i].setX(rectArray[position].getWidth());
 
                         TranslateTransition trans = new TranslateTransition(Duration.millis(animationTime), rectArray[i]);
                         trans.setFromX(rectArray[i].getX());
