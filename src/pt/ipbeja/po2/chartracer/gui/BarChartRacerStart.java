@@ -7,11 +7,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import pt.ipbeja.po2.chartracer.model.ReadTxtFile;
+import pt.ipbeja.po2.chartracer.model.View;
 
 import java.io.File;
 
 
-public class BarChartRacerStart extends Application {
+public class BarChartRacerStart extends Application{
 
     private Stage stage;
     private String path;
@@ -20,6 +21,7 @@ public class BarChartRacerStart extends Application {
     private final int sceneW = 800;
     private final int sceneH = 600;
     private ReadTxtFile readTxtFile;
+    public View view;
 
     public static void main(String[] args) {
         launch(args);

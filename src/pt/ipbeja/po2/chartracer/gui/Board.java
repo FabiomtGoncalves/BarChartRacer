@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class Board extends BorderPane implements View {
+public class Board implements View{
 
     private Bar bar;
     private Bar bar2;
@@ -26,12 +26,14 @@ public class Board extends BorderPane implements View {
     private String year;
     private int result;
     private Color color;
+    public View view;
 
 
     private final int animationTime = 20000;
     private final int reset = 50;
     private final int numOfObjs = 12;
 
+    @Override
     public MenuBar createMenu(Group group, String path) {
         MenuBar menuBar = new MenuBar();
         Menu menu = new Menu("Bar Chart Racer");
@@ -198,5 +200,6 @@ public class Board extends BorderPane implements View {
         group.getChildren().addAll(r);
 
     }
+
 
 }
