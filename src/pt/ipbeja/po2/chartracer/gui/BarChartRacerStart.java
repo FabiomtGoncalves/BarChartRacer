@@ -6,6 +6,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -36,7 +37,9 @@ public class BarChartRacerStart extends Application {
     private final int reset = 50;
     private final int sceneW = 800;
     private final int sceneH = 600;
-    int result;
+    private int result;
+    private Color color;
+    private Bar bSkin;
 
     public static void main(String[] args) {
         launch(args);
@@ -93,14 +96,42 @@ public class BarChartRacerStart extends Application {
         Menu close = new Menu("Fechar");
 
         Menu skin = new Menu("Skin");
-        MenuItem cor1 = new MenuItem("Cor1");
-        skin.getItems().addAll(cor1);
+        MenuItem defaultSkin = new MenuItem("Default");
+        MenuItem stroke = new MenuItem("Stroke");
+        skin.getItems().addAll(defaultSkin, stroke);
 
         Menu data = new Menu("Data");
         MenuItem generateFile = new MenuItem("Generate File");
         data.getItems().addAll(generateFile);
 
         menuBar.getMenus().addAll(menu, skin, data, close);
+
+        //bSkin = new Bar(0,0, Color.TRANSPARENT);
+
+        defaultSkin.setOnAction(actionEvent -> {
+            color = Color.TRANSPARENT;
+        });
+
+        stroke.setOnAction(actionEvent -> {
+            List<String> choices = new ArrayList<>();
+            choices.add("Preto");
+            choices.add("Azul");
+            choices.add("Verde");
+
+            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha uma cor", choices);
+            dialog.setTitle("Cor da Stroke");
+            dialog.setHeaderText("Escolha uma cor");
+            dialog.setContentText("Cor:");
+
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()){
+                switch (result.get()) {
+                    case "Preto" -> color = Color.BLACK;
+                    case "Azul" -> color = Color.BLUE;
+                    case "Verde" -> color = Color.GREEN;
+                }
+            }
+        });
 
         close.setOnAction(actionEvent -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -160,7 +191,7 @@ public class BarChartRacerStart extends Application {
 
 
         for (int i = 0; i < population.length; i++) {
-            bar = new Bar(positionY, 0);
+            bar = new Bar(positionY, 0, color);
 
             cityName = new CityName(cityNames[i], positionY+30);
             textArray[i] = cityName;
@@ -174,7 +205,7 @@ public class BarChartRacerStart extends Application {
 
                 tempPop = Integer.parseInt(cities[line][3]) / 100;
 
-                bar2 = new Bar(positionY, tempPop);
+                bar2 = new Bar(positionY, tempPop, color);
 
                 tempCity = cities[line][1];
                 list.add(Integer.parseInt(cities[line][3]));

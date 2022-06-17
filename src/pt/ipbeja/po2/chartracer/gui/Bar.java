@@ -7,11 +7,13 @@ public class Bar extends Rectangle implements Comparable<Rectangle> {
 
     private final int height = 50;
 
-    public Bar(int positionY, int width){
+    public Bar(int positionY, int width, Color strokeColor){
         this.setY(positionY);
         this.setHeight(this.height);
         this.setFill(Color.VIOLET);
         this.setWidth(width);
+        this.setStrokeWidth(10);
+        this.setStroke(strokeColor);
     }
 
 
