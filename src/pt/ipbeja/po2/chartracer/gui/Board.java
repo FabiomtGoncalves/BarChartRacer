@@ -39,6 +39,7 @@ public class Board implements View{
     @Override
     public MenuBar createMenu(Group group, String path, Stage stage) {
 
+
         MenuBar menuBar = new MenuBar();
         Menu menu = new Menu("Bar Chart Racer");
 
