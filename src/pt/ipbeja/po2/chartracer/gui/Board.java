@@ -111,7 +111,7 @@ public class Board implements View{
         });
 
         MenuItem biggest = new MenuItem("O Maior de Sempre");
-        MenuItem biggestInX = new MenuItem("O Maior em Determinado Ano");
+        MenuItem biggestInX = new MenuItem("Os Maiores em Determinado Espaço de Tempo");
         MenuItem population = new MenuItem("População de Determinada Cidade ao Longo dos Anos");
         menu.getItems().addAll(biggest, biggestInX, population);
 
@@ -122,12 +122,26 @@ public class Board implements View{
 
         biggestInX.setOnAction(event -> {
             group.getChildren().clear();
-            TextInputDialog td = new TextInputDialog();
-            td.setHeaderText("Introduza o Ano (1500 - 2018)");
-            td.setTitle("Ano");
-            Optional<String> result = td.showAndWait();
+
+            String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
+            List<String> choices = new ArrayList<>();
+
+            for (String[] strings : inputFile) {
+                if (strings.length > 2) {
+                    if (!choices.contains(strings[0])) {
+                        choices.add(strings[0]);
+                    }
+                }
+            }
+
+            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha um tempo", choices);
+            dialog.setTitle("Tempo Desejado");
+            dialog.setHeaderText("Tempo Desejado");
+            dialog.setContentText("Data / Tempo:");
+
+            Optional<String> result = dialog.showAndWait();
             result.ifPresent(year -> this.year = year);
-            specificYear(year, group, path);
+            specificYear(group, path);
         });
 
         population.setOnAction(event -> {
@@ -149,8 +163,6 @@ public class Board implements View{
         title.setText("The most populous cities in the world from 1500 to 2018");
         group.getChildren().add(title);
         String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
-        List<Integer> list = new ArrayList<Integer>();
-        List<String> listCityNames = new ArrayList<String>();
         String[] cityNames = new String[numOfObjs];
         int[] population = new int[numOfObjs];
         Rectangle[] rectArray = new Rectangle[numOfObjs];
@@ -177,8 +189,6 @@ public class Board implements View{
                 tempPop = Integer.parseInt(inputFile[line][3]) / 100;
                 Bar bar2 = new Bar(positionY, tempPop, color);
                 tempCity = inputFile[line][1];
-                list.add(Integer.parseInt(inputFile[line][3]));
-                listCityNames.add(inputFile[line][1]);
 
                 for (int i = 0; i < population.length; i++) {
 
@@ -209,24 +219,40 @@ public class Board implements View{
 
     }
 
-    private void specificYear(String ano, Group group, String path) {
+    private void specificYear(Group group, String path) {
+        positionY = 70;
+
+        Text title = new Text();
+        title.setFont(new Font(30));
+        title.setText("The most populous cities in the world in " + year);
+        group.getChildren().add(title);
 
         String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
-        int population = 0;
-        Rectangle r = new Rectangle();
-        r.setX(300);
-        r.setY(10);
-        r.setHeight(100);
+        String[][] data = new String[12][2]; //TODO - Fix nesse 12 que isso fica pequeno
+        int count = 0;
 
-        for (String[] strings : inputFile) {
-            if (strings.length > 2 && strings[0].equals(ano) && Integer.parseInt(strings[3]) > population) {
-                population = Integer.parseInt(strings[3]);
-                r.setWidth(positionY = population / 100);
+
+        for (int i = 0; i < inputFile.length; i++) {
+            if(inputFile[i][0].equals(year)) {
+                data[count][0] = inputFile[i][1];
+                data[count][1] = inputFile[i][3];
+
+                count++;
             }
         }
+        Arrays.parallelSort(data, Comparator.comparingInt(o -> Integer.parseInt(o[1])));
+        Collections.reverse(Arrays.asList(data));
 
-        group.getChildren().addAll(r);
 
+        for (int i = 0; i < data.length; i++) {
+            Bar bar = new Bar(positionY, Integer.parseInt(data[i][1]) / 50, color);
+            CityName cityName = new CityName(data[i][0], positionY+35);
+            CityName pop = new CityName(data[i][1], positionY+15);
+            pop.setX(bar.getWidth() + 10);
+            group.getChildren().addAll(bar, cityName, pop);
+
+            positionY += 70;
+        }
     }
 
     private void generateFile(String path, Stage stage){
