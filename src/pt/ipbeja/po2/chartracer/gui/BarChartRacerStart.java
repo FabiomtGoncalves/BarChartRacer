@@ -1,3 +1,8 @@
+/**
+ * Fábio Gonçalves nº17646
+ * João Portelinha nº20481
+ **/
+
 package pt.ipbeja.po2.chartracer.gui;
 
 import javafx.application.Application;
@@ -33,15 +38,21 @@ public class BarChartRacerStart extends Application{
         Board board = new Board();
         //Scene scene = new Scene(board);
 
-        FileChooser chooser = new FileChooser();
-        chooser.setInitialDirectory(new File("..\\17646_20481_BarChartRacer\\src\\pt\\ipbeja\\po2\\chartracer"));
-        chooser.setTitle("Escolha o Ficheiro");
-        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
-        File file = chooser.showOpenDialog(primaryStage);
-        path = file.getAbsolutePath();
-        this.readTxtFile = new ReadTxtFile(path);
+        try {
+            FileChooser chooser = new FileChooser();
+            chooser.setInitialDirectory(new File("..\\17646_20481_BarChartRacer\\src\\pt\\ipbeja\\po2\\chartracer\\datasets"));
+            chooser.setTitle("Escolha o Ficheiro");
+            chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+            File file = chooser.showOpenDialog(primaryStage);
+            path = file.getAbsolutePath();
+            this.readTxtFile = new ReadTxtFile(path);
 
-        borderPane.setTop(board.createMenu(group, path));
+        } catch (Exception e) {
+            System.out.println("Não foi selecionado nenhum ficheiro de texto. O programa foi fechado.");
+            System.exit(0);
+        }
+
+        borderPane.setTop(board.createMenu(group, path, this.stage));
         borderPane.setLeft(group);
         Scene scene = new Scene(borderPane, sceneW, sceneH);
         this.stage.setScene(scene);
