@@ -6,6 +6,7 @@
 package pt.ipbeja.po2.chartracer.gui;
 
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
@@ -175,7 +176,7 @@ public class Board implements View{
         for (int i = 0; i < population.length; i++) {
 
             Bar bar = new Bar(positionY, 0, color);
-            cityName = new CityName(cityNames[i], positionY+30);
+            cityName = new CityName(cityNames[i], positionY + 30);
             textArray[i] = cityName;
             rectArray[i] = bar;
             group.getChildren().addAll(bar, cityName);
@@ -199,14 +200,11 @@ public class Board implements View{
 
                     if (result > 0 && !intList.contains(tempCity)){
 
-                        rectArray[i].setWidth(bar2.getWidth());
-                        textArray[i].setText(tempCity);
-                        textArray[i].setX(rectArray[i].getWidth());
+                        sleep(rectArray[i], textArray[i], bar2, tempCity);
 
-                        TranslateTransition trans = new TranslateTransition(Duration.millis(animationTime), rectArray[i]);
-                        trans.setFromX(rectArray[i].getX());
-                        trans.setToX(rectArray[i].getWidth());
-                        trans.play();
+                        //rectArray[i].setWidth(bar2.getWidth());
+                        //textArray[i].setText(tempCity);
+                        //textArray[i].setX(rectArray[i].getWidth());
 
                         population[i] = tempPop;
                         cityNames[i] = tempCity;
@@ -218,6 +216,28 @@ public class Board implements View{
 
         System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
 
+    }
+
+    private void sleep(Rectangle rect, Text text, Bar bar2, String tempCity){
+
+        Thread t = new Thread( () ->  {
+            //for(int j = 0; j < 99999; j++) {
+                //Platform.runLater( () ->
+                       // {
+                            rect.setWidth(bar2.getWidth());
+                            text.setText(tempCity);
+                            text.setX(rect.getWidth());
+                        //}
+                //);
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            //}
+        });
+        t.start();
     }
 
     private void specificYear(Group group, String path) {

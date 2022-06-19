@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BarChartRacerStartTest {
     @Test
     void E2_3() {
-        BarChartRacerStart barChartRacerStart = new BarChartRacerStart();
+        //BarChartRacerStart barChartRacerStart = new BarChartRacerStart();
 
 
 

@@ -5,7 +5,10 @@
 
 package pt.ipbeja.po2.chartracer.model;
 
+import javafx.scene.Group;
 import javafx.scene.control.Alert;
+import javafx.scene.control.MenuBar;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class ReadTxtFile{
+public class ReadTxtFile implements View{
 
     private List<String> stats;
 
@@ -43,6 +46,11 @@ public class ReadTxtFile{
             System.out.println(errorMessage + " - Exception " + e.toString())  ;
             return new String[0][];
         }
+    }
+
+    @Override
+    public MenuBar createMenu(Group group, String path, Stage stage) {
+        return null;
     }
 
 }
