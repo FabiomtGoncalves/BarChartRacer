@@ -5,8 +5,6 @@
 
 package pt.ipbeja.po2.chartracer.gui;
 
-import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
@@ -15,7 +13,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import pt.ipbeja.po2.chartracer.model.ReadTxtFile;
 import pt.ipbeja.po2.chartracer.model.View;
 
@@ -114,8 +111,9 @@ public class Board implements View{
 
         MenuItem biggest = new MenuItem("O Maior de Sempre");
         MenuItem biggestInX = new MenuItem("Os Maiores em Determinado Espaço de Tempo");
+        MenuItem smallestInX = new MenuItem("Os Menores em Determinado Espaço de Tempo");
         MenuItem population = new MenuItem("População de Determinada Cidade ao Longo dos Anos");
-        menu.getItems().addAll(biggest, biggestInX, population);
+        menu.getItems().addAll(biggest, biggestInX, smallestInX, population);
 
         biggest.setOnAction(event -> {
             group.getChildren().clear();
@@ -143,7 +141,31 @@ public class Board implements View{
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(year -> this.year = year);
-            specificYear(group, path);
+            biggestInSpecificYear(group, path);
+        });
+
+        smallestInX.setOnAction(event -> {
+            group.getChildren().clear();
+
+            String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
+            List<String> choices = new ArrayList<>();
+
+            for (String[] strings : inputFile) {
+                if (strings.length > 2) {
+                    if (!choices.contains(strings[0])) {
+                        choices.add(strings[0]);
+                    }
+                }
+            }
+
+            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha um tempo", choices);
+            dialog.setTitle("Tempo Desejado");
+            dialog.setHeaderText("Tempo Desejado");
+            dialog.setContentText("Data / Tempo:");
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(year -> this.year = year);
+            smallestInSpecificYear(group, path);
         });
 
         population.setOnAction(event -> {
@@ -240,7 +262,7 @@ public class Board implements View{
         t.start();
     }
 
-    private void specificYear(Group group, String path) {
+    private void biggestInSpecificYear(Group group, String path) {
         positionY = 70;
 
         Text title = new Text();
@@ -264,6 +286,41 @@ public class Board implements View{
         Arrays.parallelSort(data, Comparator.comparingInt(o -> Integer.parseInt(o[1])));
         Collections.reverse(Arrays.asList(data));
 
+
+        for (int i = 0; i < data.length; i++) {
+            Bar bar = new Bar(positionY, Integer.parseInt(data[i][1]) / 50, color);
+            CityName cityName = new CityName(data[i][0], positionY+35);
+            CityName pop = new CityName(data[i][1], positionY+15);
+            pop.setX(bar.getWidth() + 10);
+            group.getChildren().addAll(bar, cityName, pop);
+
+            positionY += 70;
+        }
+    }
+
+    private void smallestInSpecificYear(Group group, String path) { //TODO - Não faz grande sentido sendo q é o anterior mas pela ordem contraria
+        positionY = 70;
+
+        Text title = new Text();
+        title.setFont(new Font(30));
+        title.setText("The least populous cities in the world in " + year);
+        group.getChildren().add(title);
+
+        String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
+        String[][] data = new String[12][2]; //TODO - Fix nesse 12 que isso fica pequeno
+        int count = 0;
+
+
+        for (int i = 0; i < inputFile.length; i++) {
+            if(inputFile[i][0].equals(year)) {
+                data[count][0] = inputFile[i][1];
+                data[count][1] = inputFile[i][3];
+
+                count++;
+            }
+        }
+
+        Arrays.parallelSort(data, Comparator.comparingInt(o -> Integer.parseInt(o[1])));
 
         for (int i = 0; i < data.length; i++) {
             Bar bar = new Bar(positionY, Integer.parseInt(data[i][1]) / 50, color);
