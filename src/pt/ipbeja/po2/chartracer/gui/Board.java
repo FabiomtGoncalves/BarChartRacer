@@ -262,19 +262,19 @@ public class Board implements View{
 
         Thread t = new Thread( () ->  {
             //for(int j = 0; j < 99999; j++) {
-                //Platform.runLater( () ->
-                       // {
-                            rect.setWidth(bar2.getWidth());
-                            text.setText(tempCity);
-                            text.setX(rect.getWidth());
-                        //}
-                //);
+            //Platform.runLater( () ->
+            // {
+            rect.setWidth(bar2.getWidth());
+            text.setText(tempCity);
+            text.setX(rect.getWidth());
+            //}
+            //);
 
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             //}
         });
         t.start();
@@ -415,12 +415,12 @@ public class Board implements View{
 
         try {
 
-        FileChooser chooser = new FileChooser();
-        chooser.setInitialDirectory(new File("..\\17646_20481_BarChartRacer\\src\\pt\\ipbeja\\po2\\chartracer\\datasets"));
-        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
-        chooser.setInitialFileName("data_stats" + ".txt");
-        File file = chooser.showSaveDialog(stage);
-        Path path2 = file.toPath();
+            FileChooser chooser = new FileChooser();
+            chooser.setInitialDirectory(new File("..\\17646_20481_BarChartRacer\\src\\pt\\ipbeja\\po2\\chartracer\\datasets"));
+            chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+            chooser.setInitialFileName("data_stats" + ".txt");
+            File file = chooser.showSaveDialog(stage);
+            Path path2 = file.toPath();
 
             try {
                 Files.write(path2, List.of(predictions));
