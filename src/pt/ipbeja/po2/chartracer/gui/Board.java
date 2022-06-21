@@ -5,6 +5,7 @@
 
 package pt.ipbeja.po2.chartracer.gui;
 
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
@@ -27,13 +28,15 @@ public class Board implements View{
     private CityName cityName;
     private Integer positionY = 50;
     private String year;
-    private String city;
     private Color color;
     public View view;
+
 
     private final int animationTime = 20000;
     private final int reset = 50;
     private final int numOfObjs = 12;
+    Rectangle[] rectArray = new Rectangle[numOfObjs];
+
 
     @Override
     public MenuBar createMenu(Group group, String path, Stage stage) {
@@ -112,9 +115,8 @@ public class Board implements View{
 
         MenuItem biggest = new MenuItem("O Maior de Sempre");
         MenuItem biggestInX = new MenuItem("Os Maiores em Determinado Espaço de Tempo");
-        MenuItem smallestInX = new MenuItem("Os Menores em Determinado Espaço de Tempo");
-        MenuItem specificCity = new MenuItem("População de Determinada Cidade ao Longo dos Anos");
-        menu.getItems().addAll(biggest, biggestInX, smallestInX, specificCity);
+        MenuItem population = new MenuItem("População de Determinada Cidade ao Longo dos Anos");
+        menu.getItems().addAll(biggest, biggestInX, population);
 
         biggest.setOnAction(event -> {
             group.getChildren().clear();
@@ -142,55 +144,14 @@ public class Board implements View{
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(year -> this.year = year);
-            biggestInSpecificYear(group, path);
+            specificYear(group, path);
         });
 
-        smallestInX.setOnAction(event -> {
-            group.getChildren().clear();
-
-            String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
-            List<String> choices = new ArrayList<>();
-
-            for (String[] strings : inputFile) {
-                if (strings.length > 2) {
-                    if (!choices.contains(strings[0])) {
-                        choices.add(strings[0]);
-                    }
-                }
-            }
-
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha um tempo", choices);
-            dialog.setTitle("Tempo Desejado");
-            dialog.setHeaderText("Tempo Desejado");
-            dialog.setContentText("Data / Tempo:");
-
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(year -> this.year = year);
-            smallestInSpecificYear(group, path);
-        });
-
-        specificCity.setOnAction(event -> {
-            group.getChildren().clear();
-
-            String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
-            List<String> choices = new ArrayList<>();
-
-            for (String[] strings : inputFile) {
-                if (strings.length > 2) {
-                    if (!choices.contains(strings[1])) {
-                        choices.add(strings[1]);
-                    }
-                }
-            }
-
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha um cidade", choices);
-            dialog.setTitle("Cidade");
-            dialog.setHeaderText("Cidade");
-            dialog.setContentText("Cidade:");
-
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(city -> this.city = city);
-            specificCity(group, path);
+        population.setOnAction(event -> {
+            TextInputDialog td = new TextInputDialog();
+            td.setHeaderText("Introduza o Nome da Cidade");
+            td.setTitle("Cidade");
+            td.show();
         });
 
         return menuBar;
@@ -207,11 +168,8 @@ public class Board implements View{
         String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
         String[] cityNames = new String[numOfObjs];
         int[] population = new int[numOfObjs];
-        Rectangle[] rectArray = new Rectangle[numOfObjs];
+        //Rectangle[] rectArray = new Rectangle[numOfObjs];
         Text[] textArray = new Text[numOfObjs];
-        int tempPop = 0;
-        String tempCity = "";
-
 
         for (int i = 0; i < population.length; i++) {
 
@@ -224,32 +182,47 @@ public class Board implements View{
 
         }
 
-        for (int line = 0; line < inputFile.length; line++) { //TODO - para mostrar as cidades de forma mais lenta e ir mudando o for tem de ser mais lento Thread.sleep?
+        for (String[] strings : inputFile) {
 
-            if (inputFile[line].length > 2 /*&& Integer.parseInt(cities[line][3]) > population*/) {
+            if (strings.length > 2 /*&& Integer.parseInt(cities[line][3]) > population*/) {
 
-                tempPop = Integer.parseInt(inputFile[line][3]) / 100;
+                int tempPop = Integer.parseInt(strings[3]) / 100;
                 Bar bar2 = new Bar(positionY, tempPop, color);
-                tempCity = inputFile[line][1];
+                String tempCity = strings[1];
 
-                for (int i = 0; i < population.length; i++) {
+                List<String> intList = new ArrayList<>(Arrays.asList(cityNames));
 
-                    System.out.println("Comparação: " + bar2.compareTo(rectArray[i]));
-                    int result = bar2.compareTo(rectArray[i]);
-                    List<String> intList = new ArrayList<>(Arrays.asList(cityNames));
+                double smallest = rectArray[0].getWidth();
 
-                    if (result > 0 && !intList.contains(tempCity)){
+                int x = 0;
 
-                        sleep(rectArray[i], textArray[i], bar2, tempCity);
-
-                        //rectArray[i].setWidth(bar2.getWidth());
-                        //textArray[i].setText(tempCity);
-                        //textArray[i].setX(rectArray[i].getWidth());
-
-                        population[i] = tempPop;
-                        cityNames[i] = tempCity;
-                        break;
+                for (int j = 0; j < rectArray.length; j++) {
+                    if (smallest > rectArray[j].getWidth() && !intList.contains(tempCity)) {
+                        smallest = rectArray[j].getWidth();
+                        System.out.println("entrou");
+                        x = j;
                     }
+                }
+
+                System.out.println("X: " + x);
+
+                int result = bar2.compareTo(rectArray[x]);
+
+                if (result > 0) {
+
+                    double posicao = rectArray[x].getY();
+
+                    sleep(bar2, group, posicao);
+
+                    rectArray[x].setWidth(bar2.getWidth());
+                    textArray[x].setText(tempCity);
+                    textArray[x].setX(rectArray[x].getWidth());
+                    /*rectArray[x].setWidth(bar2.getWidth());
+                    textArray[x].setText(tempCity);
+                    textArray[x].setX(rectArray[x].getWidth());*/
+
+                    population[x] = tempPop;
+                    cityNames[x] = tempCity;
                 }
             }
         }
@@ -258,29 +231,30 @@ public class Board implements View{
 
     }
 
-    private void sleep(Rectangle rect, Text text, Bar bar2, String tempCity){
+    private void sleep(Bar bar2, Group group, Double posicao){
 
         Thread t = new Thread( () ->  {
-            //for(int j = 0; j < 99999; j++) {
-            //Platform.runLater( () ->
-            // {
-            rect.setWidth(bar2.getWidth());
-            text.setText(tempCity);
-            text.setX(rect.getWidth());
-            //}
-            //);
+            for(int j = 0; j < 20; j++) {
+                Platform.runLater( () ->
+                        {
+                            Bar barNew = new Bar(posicao, bar2.getWidth(), Color.BLACK);
+                            barNew.setX(500);
+                            group.getChildren().addAll(barNew);
+                        }
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                );
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            //}
         });
         t.start();
     }
 
-    private void biggestInSpecificYear(Group group, String path) {
+    private void specificYear(Group group, String path) {
         positionY = 70;
 
         Text title = new Text();
@@ -314,55 +288,6 @@ public class Board implements View{
 
             positionY += 70;
         }
-    }
-
-    private void smallestInSpecificYear(Group group, String path) { //TODO - Não faz grande sentido sendo q é o anterior mas pela ordem contraria
-        positionY = 70;
-
-        Text title = new Text();
-        title.setFont(new Font(30));
-        title.setText("The least populous cities in the world in " + year);
-        group.getChildren().add(title);
-
-        String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
-        String[][] data = new String[12][2]; //TODO - Fix nesse 12 que isso fica pequeno
-        int count = 0;
-
-
-        for (int i = 0; i < inputFile.length; i++) {
-            if(inputFile[i][0].equals(year)) {
-                data[count][0] = inputFile[i][1];
-                data[count][1] = inputFile[i][3];
-
-                count++;
-            }
-        }
-
-        Arrays.parallelSort(data, Comparator.comparingInt(o -> Integer.parseInt(o[1])));
-
-        for (int i = 0; i < data.length; i++) {
-            Bar bar = new Bar(positionY, Integer.parseInt(data[i][1]) / 50, color);
-            CityName cityName = new CityName(data[i][0], positionY+35);
-            CityName pop = new CityName(data[i][1], positionY+15);
-            pop.setX(bar.getWidth() + 10);
-            group.getChildren().addAll(bar, cityName, pop);
-
-            positionY += 70;
-        }
-    }
-
-    private void specificCity(Group group, String path) {
-        positionY = 70;
-
-        Text title = new Text();
-        title.setFont(new Font(30));
-        title.setText("Population of " + city + " through the years");
-        group.getChildren().add(title);
-
-        String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
-        String[][] data = new String[12][2]; //TODO - Fix nesse 12 que isso fica pequeno
-        int count = 0;
-
     }
 
     private void generateFile(String path, Stage stage){
