@@ -20,4 +20,12 @@ class ReadTxtFileTest {
         assertEquals(file[4797][3], "1990");
         assertEquals(file[4797][4], "Europe");
     }
+
+    void t2() {
+        String[][] file = ReadTxtFile.readFileToStringArray2D("src/pt/ipbeja/po2/chartracer/datasets/cities.txt", ",");
+        String[][] teste;
+        for (int i = 0; i < 5; i++) {
+
+        }
+    }
 }
