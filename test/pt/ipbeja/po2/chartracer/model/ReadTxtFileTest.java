@@ -1,14 +1,14 @@
-package pt.ipbeja.po2.chartracer.gui;
+package pt.ipbeja.po2.chartracer.model;
 
 import org.junit.jupiter.api.Test;
-import pt.ipbeja.po2.chartracer.model.ReadTxtFile;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReadTxtFileTest {
+
     @Test
-    void testReadFile() {
-        String[][] file = ReadTxtFile.readFileToStringArray2D("src/pt/ipbeja/po2/chartracer/cities.txt", ",");
+    void t1() {
+        String[][] file = ReadTxtFile.readFileToStringArray2D("src/pt/ipbeja/po2/chartracer/datasets/cities.txt", ",");
         assertEquals(file[5][0], "1500");
         assertEquals(file[5][1], "Beijing");
         assertEquals(file[5][2], "China");

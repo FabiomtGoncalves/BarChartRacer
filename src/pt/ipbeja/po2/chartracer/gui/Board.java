@@ -27,6 +27,7 @@ public class Board implements View{
     private CityName cityName;
     private Integer positionY = 50;
     private String year;
+    private String city;
     private Color color;
     public View view;
 
@@ -112,8 +113,8 @@ public class Board implements View{
         MenuItem biggest = new MenuItem("O Maior de Sempre");
         MenuItem biggestInX = new MenuItem("Os Maiores em Determinado Espaço de Tempo");
         MenuItem smallestInX = new MenuItem("Os Menores em Determinado Espaço de Tempo");
-        MenuItem population = new MenuItem("População de Determinada Cidade ao Longo dos Anos");
-        menu.getItems().addAll(biggest, biggestInX, smallestInX, population);
+        MenuItem specificCity = new MenuItem("População de Determinada Cidade ao Longo dos Anos");
+        menu.getItems().addAll(biggest, biggestInX, smallestInX, specificCity);
 
         biggest.setOnAction(event -> {
             group.getChildren().clear();
@@ -168,11 +169,28 @@ public class Board implements View{
             smallestInSpecificYear(group, path);
         });
 
-        population.setOnAction(event -> {
-            TextInputDialog td = new TextInputDialog();
-            td.setHeaderText("Introduza o Nome da Cidade");
-            td.setTitle("Cidade");
-            td.show();
+        specificCity.setOnAction(event -> {
+            group.getChildren().clear();
+
+            String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
+            List<String> choices = new ArrayList<>();
+
+            for (String[] strings : inputFile) {
+                if (strings.length > 2) {
+                    if (!choices.contains(strings[1])) {
+                        choices.add(strings[1]);
+                    }
+                }
+            }
+
+            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha um cidade", choices);
+            dialog.setTitle("Cidade");
+            dialog.setHeaderText("Cidade");
+            dialog.setContentText("Cidade:");
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(city -> this.city = city);
+            specificCity(group, path);
         });
 
         return menuBar;
@@ -331,6 +349,20 @@ public class Board implements View{
 
             positionY += 70;
         }
+    }
+
+    private void specificCity(Group group, String path) {
+        positionY = 70;
+
+        Text title = new Text();
+        title.setFont(new Font(30));
+        title.setText("Population of " + city + " through the years");
+        group.getChildren().add(title);
+
+        String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
+        String[][] data = new String[12][2]; //TODO - Fix nesse 12 que isso fica pequeno
+        int count = 0;
+
     }
 
     private void generateFile(String path, Stage stage){
