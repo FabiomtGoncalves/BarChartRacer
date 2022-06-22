@@ -43,7 +43,7 @@ public class BarChartRacerStart extends Application{
 
         try {
             FileChooser chooser = new FileChooser();
-            chooser.setInitialDirectory(new File("..\\17646_20481_BarChartRacer\\src\\pt\\ipbeja\\po2\\chartracer\\datasets"));
+            chooser.setInitialDirectory(new File("..\\17646_FabioGoncalves_20481_JoaoPortelinha_TP_PO2_2021-2022\\src\\pt\\ipbeja\\po2\\chartracer\\datasets"));
             chooser.setTitle("Escolha o Ficheiro");
             chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
             File file = chooser.showOpenDialog(primaryStage);
