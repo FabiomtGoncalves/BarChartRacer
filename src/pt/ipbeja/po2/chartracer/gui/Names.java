@@ -10,7 +10,6 @@ import javafx.scene.text.Text;
 
 public class Names extends Text {
 
-
     public Names(String name, int positionY, Double fontSize){
         this.setText(name);
         this.setY(positionY);
