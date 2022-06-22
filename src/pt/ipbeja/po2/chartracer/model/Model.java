@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import pt.ipbeja.po2.chartracer.gui.Bar;
 import pt.ipbeja.po2.chartracer.gui.BarChartRacerStart;
@@ -21,6 +22,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class Model implements View{
 
@@ -32,6 +34,7 @@ public class Model implements View{
     private Color strokeColor;
     private Color barColor = Color.RED;
     private final int animationTime = 20000;
+    private double count = 0;
 
     public Model(Board board, BarChartRacerStart barChartRacerStart){
         this.barChartRacerStart = barChartRacerStart;
@@ -68,23 +71,30 @@ public class Model implements View{
         }
     }
 
-    public void sleep(Bar bar, Group group, Double position){
+    public void sleep(Bar bar, Group group, Double position, String tempCity){
         Thread t = new Thread( () ->  {
-            for(int j = 0; j < 20; j++) {
                 Platform.runLater( () ->
                         {
-                            Bar barNew = new Bar(position, bar.getWidth(),Color.VIOLET, Color.BLACK);
+                            /*Bar barNew = new Bar(100, count++,Color.VIOLET, Color.BLACK);
                             barNew.setX(500);
-                            group.getChildren().addAll(barNew);
+                            group.getChildren().add(barNew);*/
+                            Bar barNew = new Bar(position, bar.getWidth() + count,Color.VIOLET, Color.BLACK);
+                            Text text = new Text();
+                            text.setText(tempCity);
+                            text.setX(barNew.getWidth());
+                            barNew.setX(500);
+                            System.out.println(text.getText());
+                            group.getChildren().addAll(barNew, text);
+                            count += 0.001;
                         }
                 );
 
                 try {
-                    Thread.sleep(999000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
+
         });
         t.start();
     }
