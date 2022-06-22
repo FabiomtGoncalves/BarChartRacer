@@ -29,7 +29,8 @@ public class Model implements View{
     private final BarChartRacerStart barChartRacerStart;
     private String year;
     private String city;
-    private Color color;
+    private Color strokeColor;
+    private Color barColor = Color.RED;
     private final int animationTime = 20000;
 
     public Model(Board board, BarChartRacerStart barChartRacerStart){
@@ -72,7 +73,7 @@ public class Model implements View{
             for(int j = 0; j < 20; j++) {
                 Platform.runLater( () ->
                         {
-                            Bar barNew = new Bar(position, bar.getWidth(), Color.BLACK);
+                            Bar barNew = new Bar(position, bar.getWidth(),Color.VIOLET, Color.BLACK);
                             barNew.setX(500);
                             group.getChildren().addAll(barNew);
                         }
@@ -102,7 +103,8 @@ public class Model implements View{
         Menu skin = new Menu("Skin");
         MenuItem defaultSkin = new MenuItem("Default");
         MenuItem stroke = new MenuItem("Stroke");
-        skin.getItems().addAll(defaultSkin, stroke);
+        MenuItem bar = new MenuItem("Bar Color");
+        skin.getItems().addAll(defaultSkin, stroke, bar);
 
         Menu data = new Menu("Data");
         MenuItem generateFile = new MenuItem("Generate File");
@@ -133,7 +135,8 @@ public class Model implements View{
         });
 
         defaultSkin.setOnAction(actionEvent -> {
-            color = Color.TRANSPARENT;
+            strokeColor = Color.TRANSPARENT;
+            barColor = Color.RED;
         });
 
         stroke.setOnAction(actionEvent -> {
@@ -150,11 +153,33 @@ public class Model implements View{
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()){
                 switch (result.get()) {
-                    case "Preto" -> color = Color.BLACK;
-                    case "Azul" -> color = Color.BLUE;
-                    case "Verde" -> color = Color.GREEN;
+                    case "Preto" -> strokeColor = Color.BLACK;
+                    case "Azul" -> strokeColor = Color.BLUE;
+                    case "Verde" -> strokeColor = Color.GREEN;
                 }
             }
+        });
+
+        bar.setOnAction(actionEvent -> {
+            List<String> choices = new ArrayList<>();
+            choices.add("Preto");
+            choices.add("Azul");
+            choices.add("Verde");
+
+            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha uma cor", choices);
+            dialog.setTitle("Skin");
+            dialog.setHeaderText("Cor da Stroke");
+            dialog.setContentText("Cor:");
+
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()){
+                switch (result.get()) {
+                    case "Laranja" -> barColor = Color.ORANGE;
+                    case "Azul" -> barColor = Color.ROYALBLUE;
+                    case "Verde" -> barColor = Color.SPRINGGREEN;
+                }
+            }
+
         });
 
         generateFile.setOnAction(actionEvent -> {
@@ -169,7 +194,7 @@ public class Model implements View{
 
         biggest.setOnAction(event -> {
             group.getChildren().clear();
-            this.board.biggest(group, path, color);
+            this.board.biggest(group, path, barColor, strokeColor);
         });
 
         biggestInX.setOnAction(event -> {
@@ -193,7 +218,7 @@ public class Model implements View{
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(year -> this.year = year);
-            this.board.biggestInSpecificYear(group, path, year, color);
+            this.board.biggestInSpecificYear(group, path, year, barColor, strokeColor);
         });
 
         smallestInX.setOnAction(event -> {
@@ -217,7 +242,7 @@ public class Model implements View{
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(year -> this.year = year);
-            this.board.smallestInSpecificYear(group, path, year, color);
+            this.board.smallestInSpecificYear(group, path, year, barColor, strokeColor);
         });
 
         specificCity.setOnAction(event -> {
@@ -241,7 +266,7 @@ public class Model implements View{
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(city -> this.city = city);
-            this.board.specificCity(group, path, city, color);
+            this.board.specificCity(group, path, city, barColor, strokeColor);
         });
 
         return menuBar;

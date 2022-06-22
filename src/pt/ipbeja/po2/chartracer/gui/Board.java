@@ -35,7 +35,7 @@ public class Board{
     }
 
 
-    public void biggest(Group group, String path, Color color) {
+    public void biggest(Group group, String path, Color barColor, Color strokeColor) {
 
         positionY = reset;
         Text title = new Text();
@@ -50,7 +50,7 @@ public class Board{
 
         for (int i = 0; i < population.length; i++) {
 
-            Bar bar = new Bar(positionY, 0, color);
+            Bar bar = new Bar(positionY, 0, barColor, strokeColor);
             cityName = new CityName(cityNames[i], positionY + 30);
             textArray[i] = cityName;
             rectArray[i] = bar;
@@ -64,7 +64,7 @@ public class Board{
             if (strings.length > 2 /*&& Integer.parseInt(cities[line][3]) > population*/) {
 
                 int tempPop = Integer.parseInt(strings[3]) / 100;
-                Bar bar2 = new Bar(positionY, tempPop, color);
+                Bar bar2 = new Bar(positionY, tempPop, barColor, strokeColor);
                 String tempCity = strings[1];
 
                 List<String> intList = new ArrayList<>(Arrays.asList(cityNames));
@@ -106,7 +106,7 @@ public class Board{
     }
 
 
-    public void biggestInSpecificYear(Group group, String path, String year, Color color) {
+    public void biggestInSpecificYear(Group group, String path, String year, Color barColor, Color strokeColor) {
         positionY = 70;
 
         Text title = new Text();
@@ -132,7 +132,7 @@ public class Board{
 
 
         for (int i = 0; i < data.length; i++) {
-            Bar bar = new Bar(positionY, Integer.parseInt(data[i][1]) / 50, color);
+            Bar bar = new Bar(positionY, Integer.parseInt(data[i][1]) / 50, barColor, strokeColor);
             CityName cityName = new CityName(data[i][0], positionY+35);
             CityName pop = new CityName(data[i][1], positionY+15);
             pop.setX(bar.getWidth() + 10);
@@ -142,7 +142,7 @@ public class Board{
         }
     }
 
-    public void specificCity(Group group, String path, String city, Color color) {
+    public void specificCity(Group group, String path, String city, Color barColor, Color strokeColor) {
         positionY = 70;
 
         Text title = new Text();
@@ -156,15 +156,15 @@ public class Board{
             if (strings.length > 2) {
                 if (strings[1].equals(city)) {
                     //TODO - Desenhar barras o width em strings[3] || correr tudo e meter todas as pops num array, correr o array a atualizar a barra
-                    Bar bar = new Bar(positionY, Float.parseFloat(strings[3]) / 50, color);
+                    Bar bar = new Bar(positionY, Float.parseFloat(strings[3]) / 50, barColor, strokeColor);
                     group.getChildren().addAll(bar);
+                    //view.sleep(bar, group, Double.valueOf(positionY));
                 }
             }
         }
-
     }
 
-    public void smallestInSpecificYear(Group group, String path, String year, Color color) { //TODO - Não faz grande sentido sendo q é o anterior mas pela ordem contraria
+    public void smallestInSpecificYear(Group group, String path, String year, Color barColor, Color strokeColor) { //TODO - Não faz grande sentido sendo q é o anterior mas pela ordem contraria
         positionY = 70;
 
         Text title = new Text();
@@ -189,7 +189,7 @@ public class Board{
         Arrays.parallelSort(data, Comparator.comparingInt(o -> Integer.parseInt(o[1])));
 
         for (int i = 0; i < data.length; i++) {
-            Bar bar = new Bar(positionY, Integer.parseInt(data[i][1]) / 50, color);
+            Bar bar = new Bar(positionY, Integer.parseInt(data[i][1]) / 50, barColor, strokeColor);
             CityName cityName = new CityName(data[i][0], positionY+35);
             CityName pop = new CityName(data[i][1], positionY+15);
             pop.setX(bar.getWidth() + 10);
