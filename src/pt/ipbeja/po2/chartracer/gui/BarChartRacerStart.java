@@ -13,7 +13,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import pt.ipbeja.po2.chartracer.model.Model;
 import pt.ipbeja.po2.chartracer.model.View;
-
 import java.io.File;
 
 public class BarChartRacerStart extends Application{
@@ -39,7 +38,6 @@ public class BarChartRacerStart extends Application{
      * @param primaryStage
      * Prompt's the user for a choice of the file form the dataset folder, draws and starts the borderPane
      */
-
     @Override
     public void start(Stage primaryStage) {
         this.stage = primaryStage;

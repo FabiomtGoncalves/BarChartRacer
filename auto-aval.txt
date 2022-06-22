@@ -1,14 +1,16 @@
 17646_FabioGoncalves_20481_JoaoPortelinha_TP_PO2_2021-2022
+Fábio Gonçalves nº 17646
+João Portelinha nº 20481
 
 Auto-Avaliação:
 E1 - 2,0
 E2 - 1,5
 E3 - 2,0
-E4 - 1,0
+E4 - 1,5
 
 NE1 - 2,5
 NE2 - 2,5
 
-TOTAL = 10,5
+TOTAL = 11
 
 Tempo gasto no projeto = 61 Horas

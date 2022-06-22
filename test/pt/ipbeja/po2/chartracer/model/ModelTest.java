@@ -124,6 +124,5 @@ class ModelTest {
         assertEquals(teste3[7][1], "Osaka");
         assertEquals(teste3[8][1], "Cairo");
         assertEquals(teste3[9][1], "Dhaka");
-
     }
 }

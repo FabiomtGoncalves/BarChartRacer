@@ -5,16 +5,15 @@
 
 package pt.ipbeja.po2.chartracer.model;
 
-import javafx.application.Platform;
-import javafx.scene.Group;
-import javafx.scene.control.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import pt.ipbeja.po2.chartracer.gui.Bar;
 import pt.ipbeja.po2.chartracer.gui.BarChartRacerStart;
 import pt.ipbeja.po2.chartracer.gui.Board;
 
+import javafx.application.Platform;
+import javafx.scene.Group;
+import javafx.scene.control.*;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,7 +21,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+
 
 public class Model implements View, Comparable<Integer>{
 
@@ -44,6 +43,10 @@ public class Model implements View, Comparable<Integer>{
         this.board.setView(this);
     }
 
+    /**
+     * @param path Path to the file
+     * Gets the file path
+     */
     public void path(String path){
         Path p = Paths.get(path);
         try {
@@ -56,6 +59,15 @@ public class Model implements View, Comparable<Integer>{
         }
     }
 
+    /**
+     * @param filename  file to read
+     * @param separator separator for tokens in each line
+     * @return array with one array of tokens in each position
+     *         or empty array if error reading file
+     *
+     * read all lines to one array of arrays of Strings
+     * Source: Projeto de IP 2020-2021
+     */
      public String[][] readFileToStringArray2D(String filename, String separator) {
         try {
             List<String> lines = Files.readAllLines(Paths.get(filename));
@@ -73,26 +85,36 @@ public class Model implements View, Comparable<Integer>{
     }
 
 
-
-    public void sleep(Bar bar, Group group, Double position, String tempCity){
+    /**
+     * @param bar
+     * @param group
+     * @param position
+     * @param name
+     * read all lines to one array of arrays of Strings
+     * Source: Projeto de IP 2020-2021
+     */
+    public void sleep(Bar bar, Group group, Double position, String name){
         Thread t = new Thread( () ->  {
+            for (int i = 0; i < 20; i++) {
                 Platform.runLater( () ->
                         {
                             Bar barNew = new Bar(position, bar.getWidth() + count,barColor, strokeColor);
                             //Text text = new Text();
-                            //text.setText(tempCity);
+                            //text.setText(name);
                             //text.setX(barNew.getWidth());
                             //System.out.println(text.getText());
                             group.getChildren().addAll(barNew);
-                            count += 0.001;
+                            count += 0.1;
                         }
                 );
 
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+
 
         });
         t.start();

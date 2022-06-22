@@ -13,10 +13,10 @@ public class Bar extends Rectangle implements Comparable<Rectangle> {
     private final int height = 50;
 
     /**
-     * @param positionY
-     * @param width
-     * @param barColor
-     * @param strokeColor
+     * @param positionY Y axis position
+     * @param width Width of the bar
+     * @param barColor Color of the bar
+     * @param strokeColor Color of the stroke of the bar
      * To create Bar objects with the following properties
      */
     public Bar(double positionY, double width, Color barColor, Color strokeColor) {
@@ -29,7 +29,7 @@ public class Bar extends Rectangle implements Comparable<Rectangle> {
     }
 
     /**
-     * @param bar
+     * @param bar Rectangle used for comparison
      * Function to compare bars
      * @return 1, -1 or 0
      */
