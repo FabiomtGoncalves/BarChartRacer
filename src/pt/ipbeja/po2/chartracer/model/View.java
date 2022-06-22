@@ -14,6 +14,6 @@ public interface View {
 
     String[][] readFileToStringArray2D(String filename, String separator);
     void path(String path);
-    void sleep(Bar bar, Group group, Double position);
+    void sleep(Bar bar, Group group, Double position, String tempcity);
     MenuBar createMenu(Group group, String path, Stage stage);
 }

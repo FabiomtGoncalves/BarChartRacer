@@ -22,12 +22,11 @@ import java.util.*;
 
 public class Board{
 
-    private CityName cityName;
+    private Names names;
     private Integer positionY = 50;
     private View view;
     private final int reset = 50;
     private final int numOfObjs = 12;
-    Rectangle[] rectArray = new Rectangle[numOfObjs];
 
     public void setView(View view) {
         this.view = view;
@@ -42,30 +41,28 @@ public class Board{
     public void biggest(Group group, String path, Color barColor, Color strokeColor) {
 
         positionY = reset;
-        Text title = new Text();
-        title.setFont(new Font(30));
-        title.setText("The most populous cities in the world from 1500 to 2018");
+        Names title = new Names("The biggest", 0, 30.0);
         group.getChildren().add(title);
         String[][] inputFile = view.readFileToStringArray2D(path, ",");
         String[] cityNames = new String[numOfObjs];
         int[] population = new int[numOfObjs];
-        //Rectangle[] rectArray = new Rectangle[numOfObjs];
-        Text[] textArray = new Text[numOfObjs];
+        Rectangle[] rectArray = new Rectangle[numOfObjs];
+        Names[] textArray = new Names[numOfObjs];
 
         for (int i = 0; i < population.length; i++) {
 
             Bar bar = new Bar(positionY, 0, barColor, strokeColor);
-            cityName = new CityName(cityNames[i], positionY + 30);
-            textArray[i] = cityName;
+            names = new Names(cityNames[i], positionY + 30, 20.0);
+            textArray[i] = names;
             rectArray[i] = bar;
-            group.getChildren().addAll(bar, cityName);
+            group.getChildren().addAll(bar, names);
             positionY += 70;
 
         }
 
         for (String[] strings : inputFile) {
 
-            if (strings.length > 2 /*&& Integer.parseInt(cities[line][3]) > population*/) {
+            if (strings.length > 2) {
 
                 int tempPop = Integer.parseInt(strings[3]) / 100;
                 Bar bar2 = new Bar(positionY, tempPop, barColor, strokeColor);
@@ -76,16 +73,27 @@ public class Board{
                 double smallest = rectArray[0].getWidth();
 
                 int x = 0;
+                int z = 0;
+
+                for (int i = 0; i < cityNames.length; i++) {
+                    if (cityNames[i] == null){
+                        break;
+                    }
+                    if (cityNames[i].equals(tempCity)){
+                        z = i;
+                    }
+                }
 
                 for (int j = 0; j < rectArray.length; j++) {
                     if (smallest > rectArray[j].getWidth() && !intList.contains(tempCity)) {
                         smallest = rectArray[j].getWidth();
-                        System.out.println("entrou");
                         x = j;
                     }
+                    else if(intList.contains(tempCity)){
+                        x = z;
+                        break;
+                    }
                 }
-
-                System.out.println("X: " + x);
 
                 int result = bar2.compareTo(rectArray[x]);
 
@@ -93,7 +101,9 @@ public class Board{
 
                     double posicao = rectArray[x].getY();
 
-                    view.sleep(bar2, group, posicao);
+
+
+                    view.sleep(bar2, group, posicao, tempCity);
 
                     rectArray[x].setWidth(bar2.getWidth());
                     textArray[x].setText(tempCity);
@@ -144,10 +154,10 @@ public class Board{
 
         for (int i = 0; i < data.length; i++) {
             Bar bar = new Bar(positionY, Integer.parseInt(data[i][1]) / 50, barColor, strokeColor);
-            CityName cityName = new CityName(data[i][0], positionY+35);
-            CityName pop = new CityName(data[i][1], positionY+15);
+            Names names = new Names(data[i][0], positionY + 35, 20.0);
+            Names pop = new Names(data[i][1], positionY + 15, 20.0);
             pop.setX(bar.getWidth() + 10);
-            group.getChildren().addAll(bar, cityName, pop);
+            group.getChildren().addAll(bar, names, pop);
 
             positionY += 70;
         }
@@ -209,10 +219,10 @@ public class Board{
 
         for (int i = 0; i < data.length; i++) {
             Bar bar = new Bar(positionY, Integer.parseInt(data[i][1]) / 50, barColor, strokeColor);
-            CityName cityName = new CityName(data[i][0], positionY+35);
-            CityName pop = new CityName(data[i][1], positionY+15);
+            Names names = new Names(data[i][0], positionY + 35, 20.0);
+            Names pop = new Names(data[i][1], positionY + 15, 20.0);
             pop.setX(bar.getWidth() + 10);
-            group.getChildren().addAll(bar, cityName, pop);
+            group.getChildren().addAll(bar, names, pop);
 
             positionY += 70;
         }
