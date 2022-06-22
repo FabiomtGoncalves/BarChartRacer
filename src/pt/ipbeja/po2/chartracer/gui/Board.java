@@ -5,7 +5,6 @@
 
 package pt.ipbeja.po2.chartracer.gui;
 
-import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
@@ -14,7 +13,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import pt.ipbeja.po2.chartracer.model.ReadTxtFile;
 import pt.ipbeja.po2.chartracer.model.View;
 
 import java.io.File;
@@ -23,149 +21,28 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-public class Board implements View{
+public class Board{
 
     private CityName cityName;
     private Integer positionY = 50;
-    private String year;
-    private Color color;
-    public View view;
-
-
-    private final int animationTime = 20000;
+    private View view;
     private final int reset = 50;
     private final int numOfObjs = 12;
     Rectangle[] rectArray = new Rectangle[numOfObjs];
 
-
-    @Override
-    public MenuBar createMenu(Group group, String path, Stage stage) {
-
-
-        MenuBar menuBar = new MenuBar();
-        Menu menu = new Menu("Bar Chart Racer");
-
-        Menu settings = new Menu("Definições");
-        MenuItem devs = new MenuItem("Devs");
-        MenuItem restart = new MenuItem("Reiniciar programa");
-        MenuItem close = new MenuItem("Fechar programa");
-        settings.getItems().addAll(devs, restart, close);
-
-        Menu skin = new Menu("Skin");
-        MenuItem defaultSkin = new MenuItem("Default");
-        MenuItem stroke = new MenuItem("Stroke");
-        skin.getItems().addAll(defaultSkin, stroke);
-
-        Menu data = new Menu("Data");
-        MenuItem generateFile = new MenuItem("Generate File");
-        data.getItems().addAll(generateFile);
-
-        menuBar.getMenus().addAll(menu, skin, data, settings);
-
-        devs.setOnAction(actionEvent -> {
-            Alert info = new Alert(Alert.AlertType.INFORMATION);
-            info.setTitle("Devs");
-            info.setHeaderText("Elaborado Por:");
-            info.setContentText("""
-                    Fábio Gonçalves nº17646
-                    João Portelinha nº20481
-                    
-                    UC: Programação Orientada por Objetos (PO2)
-                    """);
-            info.show();
-        });
-
-        restart.setOnAction(actionEvent -> {
-            BarChartRacerStart barChartRacerStart = new BarChartRacerStart();
-            barChartRacerStart.start(stage);
-        });
-
-        close.setOnAction(actionEvent -> {
-            System.exit(0);
-        });
-
-        defaultSkin.setOnAction(actionEvent -> {
-            color = Color.TRANSPARENT;
-        });
-
-        stroke.setOnAction(actionEvent -> {
-            List<String> choices = new ArrayList<>();
-            choices.add("Preto");
-            choices.add("Azul");
-            choices.add("Verde");
-
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha uma cor", choices);
-            dialog.setTitle("Skin");
-            dialog.setHeaderText("Cor da Stroke");
-            dialog.setContentText("Cor:");
-
-            Optional<String> result = dialog.showAndWait();
-            if (result.isPresent()){
-                switch (result.get()) {
-                    case "Preto" -> color = Color.BLACK;
-                    case "Azul" -> color = Color.BLUE;
-                    case "Verde" -> color = Color.GREEN;
-                }
-            }
-        });
-
-        generateFile.setOnAction(actionEvent -> {
-            generateFile(path, stage);
-        });
-
-        MenuItem biggest = new MenuItem("O Maior de Sempre");
-        MenuItem biggestInX = new MenuItem("Os Maiores em Determinado Espaço de Tempo");
-        MenuItem population = new MenuItem("População de Determinada Cidade ao Longo dos Anos");
-        menu.getItems().addAll(biggest, biggestInX, population);
-
-        biggest.setOnAction(event -> {
-            group.getChildren().clear();
-            biggest(group, path);
-        });
-
-        biggestInX.setOnAction(event -> {
-            group.getChildren().clear();
-
-            String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
-            List<String> choices = new ArrayList<>();
-
-            for (String[] strings : inputFile) {
-                if (strings.length > 2) {
-                    if (!choices.contains(strings[0])) {
-                        choices.add(strings[0]);
-                    }
-                }
-            }
-
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha um tempo", choices);
-            dialog.setTitle("Tempo Desejado");
-            dialog.setHeaderText("Tempo Desejado");
-            dialog.setContentText("Data / Tempo:");
-
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(year -> this.year = year);
-            specificYear(group, path);
-        });
-
-        population.setOnAction(event -> {
-            TextInputDialog td = new TextInputDialog();
-            td.setHeaderText("Introduza o Nome da Cidade");
-            td.setTitle("Cidade");
-            td.show();
-        });
-
-        return menuBar;
-
+    public void setView(View view) {
+        this.view = view;
     }
 
-    private void biggest(Group group, String path) {
+
+    public void biggest(Group group, String path, Color color) {
 
         positionY = reset;
         Text title = new Text();
         title.setFont(new Font(30));
         title.setText("The most populous cities in the world from 1500 to 2018");
         group.getChildren().add(title);
-        String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
+        String[][] inputFile = view.readFileToStringArray2D(path, ",");
         String[] cityNames = new String[numOfObjs];
         int[] population = new int[numOfObjs];
         //Rectangle[] rectArray = new Rectangle[numOfObjs];
@@ -212,14 +89,11 @@ public class Board implements View{
 
                     double posicao = rectArray[x].getY();
 
-                    sleep(bar2, group, posicao);
+                    view.sleep(bar2, group, posicao);
 
                     rectArray[x].setWidth(bar2.getWidth());
                     textArray[x].setText(tempCity);
                     textArray[x].setX(rectArray[x].getWidth());
-                    /*rectArray[x].setWidth(bar2.getWidth());
-                    textArray[x].setText(tempCity);
-                    textArray[x].setX(rectArray[x].getWidth());*/
 
                     population[x] = tempPop;
                     cityNames[x] = tempCity;
@@ -231,30 +105,8 @@ public class Board implements View{
 
     }
 
-    private void sleep(Bar bar2, Group group, Double posicao){
 
-        Thread t = new Thread( () ->  {
-            for(int j = 0; j < 20; j++) {
-                Platform.runLater( () ->
-                        {
-                            Bar barNew = new Bar(posicao, bar2.getWidth(), Color.BLACK);
-                            barNew.setX(500);
-                            group.getChildren().addAll(barNew);
-                        }
-
-                );
-
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        t.start();
-    }
-
-    private void specificYear(Group group, String path) {
+    public void biggestInSpecificYear(Group group, String path, String year, Color color) {
         positionY = 70;
 
         Text title = new Text();
@@ -262,7 +114,7 @@ public class Board implements View{
         title.setText("The most populous cities in the world in " + year);
         group.getChildren().add(title);
 
-        String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
+        String[][] inputFile = view.readFileToStringArray2D(path, ",");
         String[][] data = new String[12][2]; //TODO - Fix nesse 12 que isso fica pequeno
         int count = 0;
 
@@ -290,9 +142,66 @@ public class Board implements View{
         }
     }
 
-    private void generateFile(String path, Stage stage){
+    public void specificCity(Group group, String path, String city, Color color) {
+        positionY = 70;
 
-        String[][] inputFile = ReadTxtFile.readFileToStringArray2D(path, ",");
+        Text title = new Text();
+        title.setFont(new Font(30));
+        title.setText("Population of " + city + " through the years");
+        group.getChildren().add(title);
+
+        String[][] inputFile = view.readFileToStringArray2D(path, ",");
+
+        for (String[] strings : inputFile) {
+            if (strings.length > 2) {
+                if (strings[1].equals(city)) {
+                    //TODO - Desenhar barras o width em strings[3] || correr tudo e meter todas as pops num array, correr o array a atualizar a barra
+                    Bar bar = new Bar(positionY, Float.parseFloat(strings[3]) / 50, color);
+                    group.getChildren().addAll(bar);
+                }
+            }
+        }
+
+    }
+
+    public void smallestInSpecificYear(Group group, String path, String year, Color color) { //TODO - Não faz grande sentido sendo q é o anterior mas pela ordem contraria
+        positionY = 70;
+
+        Text title = new Text();
+        title.setFont(new Font(30));
+        title.setText("The least populous cities in the world in " + year);
+        group.getChildren().add(title);
+
+        String[][] inputFile = view.readFileToStringArray2D(path, ",");
+        String[][] data = new String[12][2]; //TODO - Fix nesse 12 que isso fica pequeno
+        int count = 0;
+
+
+        for (int i = 0; i < inputFile.length; i++) {
+            if(inputFile[i][0].equals(year)) {
+                data[count][0] = inputFile[i][1];
+                data[count][1] = inputFile[i][3];
+
+                count++;
+            }
+        }
+
+        Arrays.parallelSort(data, Comparator.comparingInt(o -> Integer.parseInt(o[1])));
+
+        for (int i = 0; i < data.length; i++) {
+            Bar bar = new Bar(positionY, Integer.parseInt(data[i][1]) / 50, color);
+            CityName cityName = new CityName(data[i][0], positionY+35);
+            CityName pop = new CityName(data[i][1], positionY+15);
+            pop.setX(bar.getWidth() + 10);
+            group.getChildren().addAll(bar, cityName, pop);
+
+            positionY += 70;
+        }
+    }
+
+    public void generateFile(String path, Stage stage){
+
+        String[][] inputFile = view.readFileToStringArray2D(path, ",");
 
         int numDataSets = 0;
         String firstDate = "";
