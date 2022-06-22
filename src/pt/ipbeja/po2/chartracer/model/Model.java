@@ -14,6 +14,8 @@ import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import pt.ipbeja.po2.chartracer.gui.Names;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -93,9 +95,8 @@ public class Model implements View, Comparable<Integer>{
      * read all lines to one array of arrays of Strings
      * Source: Projeto de IP 2020-2021
      */
-    public void sleep(Bar bar, Group group, Double position, String name){
+    public void sleep(Bar bar, Group group, Double position, String name, String date, Label dateYear){
         Thread t = new Thread( () ->  {
-            for (int i = 0; i < 20; i++) {
                 Platform.runLater( () ->
                         {
                             Bar barNew = new Bar(position, bar.getWidth() + count,barColor, strokeColor);
@@ -103,6 +104,7 @@ public class Model implements View, Comparable<Integer>{
                             //text.setText(name);
                             //text.setX(barNew.getWidth());
                             //System.out.println(text.getText());
+                            dateYear.setText(date + "");
                             group.getChildren().addAll(barNew);
                             count += 0.1;
                         }
@@ -113,9 +115,6 @@ public class Model implements View, Comparable<Integer>{
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
-
-
         });
         t.start();
     }

@@ -6,6 +6,7 @@
 package pt.ipbeja.po2.chartracer.gui;
 
 import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -30,6 +31,8 @@ public class Board{
     private final BarChartRacerStart start = new BarChartRacerStart();
     private final Model model = new Model(this, start);
 
+    private Label dateYear;
+
     public void setView(View view) {
         this.view = view;
     }
@@ -50,9 +53,10 @@ public class Board{
         int[] population = new int[numOfObjs];
         Bar[] rectArray = new Bar[numOfObjs];
         Names[] textArray = new Names[numOfObjs];
+        this.dateYear = new Label("0");
+        group.getChildren().addAll(dateYear);
 
         for (int i = 0; i < population.length; i++) {
-
             Bar bar = new Bar(positionY, 0, barColor, strokeColor);
             names = new Names(cityNames[i], positionY + 30, 20.0);
             textArray[i] = names;
@@ -69,6 +73,7 @@ public class Board{
                 int tempPop = Integer.parseInt(strings[3]) / 100;
                 Bar bar2 = new Bar(positionY, tempPop, barColor, strokeColor);
                 String tempCity = strings[1];
+                String date = strings[0];
                 List<String> intList = new ArrayList<>(Arrays.asList(cityNames));
 
                 double smallest = rectArray[0].getWidth();
@@ -126,7 +131,7 @@ public class Board{
                         }
                     }*/
 
-                    view.sleep(bar2, group, position, tempCity);
+                    view.sleep(bar2, group, position, tempCity, date, dateYear);
 
                 }
             }
@@ -217,7 +222,7 @@ public class Board{
                 if (strings[1].equals(city)) {
                     Bar bar = new Bar(positionY, Double.parseDouble(strings[3]) / 50, barColor, strokeColor);
                     //group.getChildren().addAll(bar);
-                    view.sleep(bar, group, Double.valueOf(positionY), city);
+                    view.sleep(bar, group, Double.valueOf(positionY), city, "", dateYear);
                 }
             }
         }
@@ -232,11 +237,15 @@ public class Board{
         group.getChildren().add(title);
 
         String[][] inputFile = view.readFileToStringArray2D(path, ",");
-        String[][] data = new String[12][2];
         int count = 0;
-
+        String[][] data = new String[count][2];
+        int asdasda = 0;
 
         for (int i = 0; i < inputFile.length; i++) {
+            if(inputFile[i][0].equals(year) && asdasda == 0){
+                asdasda = Integer.parseInt(inputFile[i--][0]);
+                data = new String[asdasda][2];
+            }
             if(inputFile[i][0].equals(year)) {
                 data[count][0] = inputFile[i][1];
                 data[count][1] = inputFile[i][3];
