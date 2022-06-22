@@ -4,19 +4,18 @@ import org.junit.jupiter.api.Test;
 import pt.ipbeja.po2.chartracer.gui.BarChartRacerStart;
 import pt.ipbeja.po2.chartracer.gui.Board;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ModelTest {
-    private View view;
-
+    Board board = new Board();
+    BarChartRacerStart barChartRacerStart = new BarChartRacerStart();
+    Model model = new Model(board, barChartRacerStart);
+    String[][] file = model.readFileToStringArray2D("src/pt/ipbeja/po2/chartracer/datasets/cities.txt", ",");
 
     @Test
-    void readFileToStringArray2D() {
-        Board board = new Board();
-        BarChartRacerStart barChartRacerStart = new BarChartRacerStart();
-        Model model = new Model(board, barChartRacerStart);
-
-        String[][] file = model.readFileToStringArray2D("src/pt/ipbeja/po2/chartracer/datasets/cities.txt", ",");
+    void teste1() {
         assertEquals(file[5][0], "1500");
         assertEquals(file[5][1], "Beijing");
         assertEquals(file[5][2], "China");
@@ -27,5 +26,73 @@ class ModelTest {
         assertEquals(file[4797][2], "United Kingdom");
         assertEquals(file[4797][3], "1990");
         assertEquals(file[4797][4], "Europe");
+    }
+
+    @Test
+    void teste2() {
+        String[][] firstYear = new String[12][5];
+        String[][] lastYear = new String[12][5];
+
+        int countFY = 0;
+        int countLY = 0;
+        String[] tempVar;
+
+        for (int i = 0; i < file.length; i++) {
+            if (file[i].length > 2) {
+                if(file[i][0].equals("1500")){
+                    for (int j = 0; j < file[i].length; j++) {
+                        firstYear[countFY][j] = file[i][j];
+                    }
+                    countFY++;
+                } else if (file[i][0].equals("2018")) {
+                    for (int j = 0; j < file[i].length; j++) {
+                        lastYear[countLY][j] = file[i][j];
+                    }
+                    countLY++;
+                }
+            }
+        }
+        for (int i = 0; i < firstYear.length; i++) {
+            for (int j = 0; j < firstYear.length; j++) {
+                model.pop = Integer.parseInt(firstYear[i][3]);
+                int result = model.compareTo(Integer.parseInt(firstYear[j][3]));
+
+                if(result == 1) {
+                    tempVar = firstYear[j];
+                    firstYear[j] = firstYear[i];
+                    firstYear[i] = tempVar;
+                }
+            }
+        }
+
+        for (int i = 0; i < lastYear.length; i++) {
+            for (int j = 0; j < lastYear.length; j++) {
+                model.pop = Integer.parseInt(lastYear[i][3]);
+                int result = model.compareTo(Integer.parseInt(lastYear[j][3]));
+
+                if(result == 1) {
+                    tempVar = lastYear[j];
+                    lastYear[j] = lastYear[i];
+                    lastYear[i] = tempVar;
+                }
+            }
+        }
+
+        assertEquals(firstYear[0][1], "Beijing");
+        assertEquals(firstYear[1][1], "Vijayanagar");
+        assertEquals(firstYear[2][1], "Cairo");
+        assertEquals(firstYear[3][1], "Tabriz");
+        assertEquals(firstYear[4][1], "Hangzhou");
+        assertEquals(lastYear[0][1], "Tokyo");
+        assertEquals(lastYear[1][1], "Delhi");
+        assertEquals(lastYear[2][1], "Shanghai");
+        assertEquals(lastYear[3][1], "Beijing");
+        assertEquals(lastYear[4][1], "Mumbai");
+    }
+
+    @Test
+    void teste3() {
+
+
     }
 }
