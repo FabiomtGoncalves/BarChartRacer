@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class Model implements View{
+public class Model implements View, Comparable<Integer>{
 
     private List<String> stats;
     private final Board board;
@@ -35,6 +35,7 @@ public class Model implements View{
     private Color barColor = Color.RED;
     private final int animationTime = 20000;
     private double count = 0;
+    public int pop = 0;
 
     public Model(Board board, BarChartRacerStart barChartRacerStart){
         this.barChartRacerStart = barChartRacerStart;
@@ -75,22 +76,18 @@ public class Model implements View{
         Thread t = new Thread( () ->  {
                 Platform.runLater( () ->
                         {
-                            /*Bar barNew = new Bar(100, count++,Color.VIOLET, Color.BLACK);
-                            barNew.setX(500);
-                            group.getChildren().add(barNew);*/
-                            Bar barNew = new Bar(position, bar.getWidth() + count,Color.VIOLET, Color.BLACK);
-                            Text text = new Text();
-                            text.setText(tempCity);
-                            text.setX(barNew.getWidth());
-                            barNew.setX(500);
-                            System.out.println(text.getText());
-                            group.getChildren().addAll(barNew, text);
+                            Bar barNew = new Bar(position, bar.getWidth() + count,barColor, strokeColor);
+                            //Text text = new Text();
+                            //text.setText(tempCity);
+                            //text.setX(barNew.getWidth());
+                            //System.out.println(text.getText());
+                            group.getChildren().addAll(barNew);
                             count += 0.001;
                         }
                 );
 
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -281,6 +278,15 @@ public class Model implements View{
 
         return menuBar;
 
+    }
+
+    @Override
+    public int compareTo(Integer pop) {
+        if (this.pop > pop) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
 }

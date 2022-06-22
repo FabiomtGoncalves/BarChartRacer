@@ -27,6 +27,7 @@ public class Board{
     private View view;
     private final int reset = 50;
     private final int numOfObjs = 12;
+    private Bar tempVar;
 
     public void setView(View view) {
         this.view = view;
@@ -41,7 +42,7 @@ public class Board{
         String[][] inputFile = view.readFileToStringArray2D(path, ",");
         String[] cityNames = new String[numOfObjs];
         int[] population = new int[numOfObjs];
-        Rectangle[] rectArray = new Rectangle[numOfObjs];
+        Bar[] rectArray = new Bar[numOfObjs];
         Names[] textArray = new Names[numOfObjs];
 
         for (int i = 0; i < population.length; i++) {
@@ -50,7 +51,7 @@ public class Board{
             names = new Names(cityNames[i], positionY + 30, 20.0);
             textArray[i] = names;
             rectArray[i] = bar;
-            group.getChildren().addAll(bar, names);
+            group.getChildren().addAll(names);
             positionY += 70;
 
         }
@@ -62,55 +63,72 @@ public class Board{
                 int tempPop = Integer.parseInt(strings[3]) / 100;
                 Bar bar2 = new Bar(positionY, tempPop, barColor, strokeColor);
                 String tempCity = strings[1];
-
                 List<String> intList = new ArrayList<>(Arrays.asList(cityNames));
 
                 double smallest = rectArray[0].getWidth();
 
-                int x = 0;
-                int z = 0;
+                int smallestPos = 0;
+                int duplicate = 0;
 
                 for (int i = 0; i < cityNames.length; i++) {
                     if (cityNames[i] == null){
                         break;
                     }
                     if (cityNames[i].equals(tempCity)){
-                        z = i;
+                        duplicate = i;
                     }
                 }
 
                 for (int j = 0; j < rectArray.length; j++) {
                     if (smallest > rectArray[j].getWidth() && !intList.contains(tempCity)) {
                         smallest = rectArray[j].getWidth();
-                        x = j;
+                        smallestPos = j;
                     }
                     else if(intList.contains(tempCity)){
-                        x = z;
+                        smallestPos = duplicate;
                         break;
                     }
                 }
 
-                int result = bar2.compareTo(rectArray[x]);
+                int result = bar2.compareTo(rectArray[smallestPos]);
 
                 if (result > 0) {
 
-                    double posicao = rectArray[x].getY();
+                    double position = rectArray[smallestPos].getY();
+
+                    rectArray[smallestPos].setWidth(bar2.getWidth());
+                    textArray[smallestPos].setText(tempCity);
+                    textArray[smallestPos].setX(rectArray[smallestPos].getWidth());
+
+                    population[smallestPos] = tempPop;
+                    cityNames[smallestPos] = tempCity;
+
+                    System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
 
 
+                    for (int i = 0; i < rectArray.length; i++) {
+                        for (int j = 0; j < rectArray.length; j++) {
 
-                    view.sleep(bar2, group, posicao, tempCity);
+                            int resultSort = rectArray[i].compareTo(rectArray[j]);
 
-                    rectArray[x].setWidth(bar2.getWidth());
-                    textArray[x].setText(tempCity);
-                    textArray[x].setX(rectArray[x].getWidth());
+                            if(resultSort > 0) {
+                                tempVar = rectArray[j];
+                                rectArray[j] = rectArray[i];
+                                rectArray[i] = tempVar;
+                            }
+                        }
+                    }
 
-                    population[x] = tempPop;
-                    cityNames[x] = tempCity;
+                    System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
+
+
+                    view.sleep(bar2, group, position, tempCity);
+
                 }
             }
         }
 
-        System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
+        //System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
 
     }
 
