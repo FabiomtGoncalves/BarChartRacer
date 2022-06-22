@@ -12,6 +12,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import pt.ipbeja.po2.chartracer.model.Model;
 import pt.ipbeja.po2.chartracer.model.View;
 
 import java.io.File;
@@ -27,7 +28,8 @@ public class Board{
     private View view;
     private final int reset = 50;
     private final int numOfObjs = 12;
-    private Bar tempVar;
+    private final BarChartRacerStart start = new BarChartRacerStart();
+    private final Model model = new Model(this, start);
 
     public void setView(View view) {
         this.view = view;
@@ -110,22 +112,20 @@ public class Board{
 
                     System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
 
+                    /*String[] tempVar;
 
-                    for (int i = 0; i < rectArray.length; i++) {
-                        for (int j = 0; j < rectArray.length; j++) {
-
-                            int resultSort = rectArray[i].compareTo(rectArray[j]);
+                    for (int i = 0; i < population.length; i++) {
+                        for (int j = 0; j < population.length; j++) {
+                            model.pop = population[i];
+                            int resultSort = model.compareTo(population[j]);
 
                             if(resultSort > 0) {
-                                tempVar = rectArray[j];
-                                rectArray[j] = rectArray[i];
-                                rectArray[i] = tempVar;
+                                tempVar = population[j];
+                                data[j] = data[i];
+                                data[i] = tempVar;
                             }
                         }
-                    }
-
-                    System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
-
+                    }*/
 
                     view.sleep(bar2, group, position, tempCity);
 
@@ -133,7 +133,7 @@ public class Board{
             }
         }
 
-        //System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
+        System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
 
     }
 
@@ -153,8 +153,10 @@ public class Board{
         title.setText("The most populous cities in the world in " + year);
         group.getChildren().add(title);
 
+        Bar[] bars = new Bar[numOfObjs];
+
         String[][] inputFile = view.readFileToStringArray2D(path, ",");
-        String[][] data = new String[12][2]; //TODO - Fix nesse 12 que isso fica pequeno
+        String[][] data = new String[12][2];
         int count = 0;
 
 
@@ -166,9 +168,21 @@ public class Board{
                 count++;
             }
         }
-        Arrays.parallelSort(data, Comparator.comparingInt(o -> Integer.parseInt(o[1])));
-        Collections.reverse(Arrays.asList(data));
 
+        String[] tempVar;
+
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data.length; j++) {
+                model.pop = Integer.parseInt(data[i][1]);
+                int result = model.compareTo(Integer.parseInt(data[j][1]));
+
+                if(result > 0) {
+                    tempVar = data[j];
+                    data[j] = data[i];
+                    data[i] = tempVar;
+                }
+            }
+        }
 
         for (int i = 0; i < data.length; i++) {
             Bar bar = new Bar(positionY, Integer.parseInt(data[i][1]) / 50, barColor, strokeColor);
@@ -202,16 +216,15 @@ public class Board{
         for (String[] strings : inputFile) {
             if (strings.length > 2) {
                 if (strings[1].equals(city)) {
-                    //TODO - Desenhar barras o width em strings[3] || correr tudo e meter todas as pops num array, correr o array a atualizar a barra
-                    Bar bar = new Bar(positionY, Float.parseFloat(strings[3]) / 50, barColor, strokeColor);
-                    group.getChildren().addAll(bar);
-                    //view.sleep(bar, group, Double.valueOf(positionY));
+                    Bar bar = new Bar(positionY, Double.parseDouble(strings[3]) / 50, barColor, strokeColor);
+                    //group.getChildren().addAll(bar);
+                    view.sleep(bar, group, Double.valueOf(positionY), city);
                 }
             }
         }
     }
 
-    public void smallestInSpecificYear(Group group, String path, String year, Color barColor, Color strokeColor) { //TODO - Não faz grande sentido sendo q é o anterior mas pela ordem contraria
+    public void smallestInSpecificYear(Group group, String path, String year, Color barColor, Color strokeColor) {
         positionY = 70;
 
         Text title = new Text();
@@ -220,7 +233,7 @@ public class Board{
         group.getChildren().add(title);
 
         String[][] inputFile = view.readFileToStringArray2D(path, ",");
-        String[][] data = new String[12][2]; //TODO - Fix nesse 12 que isso fica pequeno
+        String[][] data = new String[12][2];
         int count = 0;
 
 
@@ -232,6 +245,8 @@ public class Board{
                 count++;
             }
         }
+
+
 
         Arrays.parallelSort(data, Comparator.comparingInt(o -> Integer.parseInt(o[1])));
 
@@ -294,7 +309,7 @@ public class Board{
             }
         }
 
-        String[] predictions = {"Number of data sets in file: " + numDataSets, "First date: " + firstDate, "Last date: " + lastDate,
+        String[] datasetData = {"Number of data sets in file: " + numDataSets, "First date: " + firstDate, "Last date: " + lastDate,
                 "Average number of lines in each data set: " + (numLines / numDataSets), "Number of columns in each data set: " + numCols,
                 "Maximum value considering all data sets: " + max, "Minimum value considering all data sets: " + min};
 
@@ -302,14 +317,14 @@ public class Board{
         try {
 
             FileChooser chooser = new FileChooser();
-            chooser.setInitialDirectory(new File("..\\17646_20481_BarChartRacer\\src\\pt\\ipbeja\\po2\\chartracer\\datasets"));
+            chooser.setInitialDirectory(new File("..\\17646_FabioGoncalves_20481_JoaoPortelinha_TP_PO2_2021-2022\\src\\pt\\ipbeja\\po2\\chartracer\\datasets"));
             chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
             chooser.setInitialFileName("data_stats" + ".txt");
             File file = chooser.showSaveDialog(stage);
             Path path2 = file.toPath();
 
             try {
-                Files.write(path2, List.of(predictions));
+                Files.write(path2, List.of(datasetData));
             } catch (IOException e) {
                 System.out.println("Não foi possível escrever o ficheiro.");
                 e.printStackTrace();
