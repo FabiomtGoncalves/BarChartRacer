@@ -12,6 +12,13 @@ public class Bar extends Rectangle implements Comparable<Rectangle> {
 
     private final int height = 50;
 
+    /**
+     * @param positionY
+     * @param width
+     * @param barColor
+     * @param strokeColor
+     * To create Bar objects with the following properties
+     */
     public Bar(double positionY, double width, Color barColor, Color strokeColor) {
         this.setY(positionY);
         this.setHeight(this.height);
@@ -21,7 +28,11 @@ public class Bar extends Rectangle implements Comparable<Rectangle> {
         this.setStroke(strokeColor);
     }
 
-
+    /**
+     * @param bar
+     * Function to compare bars
+     * @return 1, -1 or 0
+     */
     @Override
     public int compareTo(Rectangle bar) {
 

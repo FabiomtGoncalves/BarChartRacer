@@ -33,7 +33,12 @@ public class Board{
         this.view = view;
     }
 
-
+    /**
+     * @param group
+     * @param path Path of the chosen dataset
+     * @param barColor Color of the fill for Bar
+     * @param strokeColor Color of the stroke for Bar
+     */
     public void biggest(Group group, String path, Color barColor, Color strokeColor) {
 
         positionY = reset;
@@ -104,7 +109,14 @@ public class Board{
 
     }
 
-
+    /**
+     * @param group
+     * @param path Path of the chosen dataset
+     * @param barColor Color of the fill for Bar
+     * @param strokeColor Color of the stroke for Bar
+     * The user is prompt with a dropdown with all the options from the dataset and then the program will draw the bars
+     * for the information that was chosen.
+     */
     public void biggestInSpecificYear(Group group, String path, String year, Color barColor, Color strokeColor) {
         positionY = 70;
 
@@ -141,6 +153,14 @@ public class Board{
         }
     }
 
+    /**
+     * @param group
+     * @param path Path of the chosen dataset
+     * @param barColor Color of the fill for Bar
+     * @param strokeColor Color of the stroke for Bar
+     * The user is prompt with a dropdown with all the options from the dataset and then the program will draw the bars
+     * for the information that was chosen.
+     */
     public void specificCity(Group group, String path, String city, Color barColor, Color strokeColor) {
         positionY = 70;
 
@@ -198,6 +218,11 @@ public class Board{
         }
     }
 
+    /**
+     * @param path Path of the chosen dataset
+     * @param stage
+     * Generates a information file for the chosen dataset
+     */
     public void generateFile(String path, Stage stage){
 
         String[][] inputFile = view.readFileToStringArray2D(path, ",");

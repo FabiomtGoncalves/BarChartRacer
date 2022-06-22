@@ -12,6 +12,11 @@ public class CityName extends Text {
 
     private final int fontSize = 20;
 
+    /**
+     * @param name Name of the city or movie (data)
+     * @param positionY Position of the object
+     * To create Text objects for the names of the data represented bars with the following properties
+     */
     public CityName(String name, int positionY){
         this.setText(name);
         this.setY(positionY);
