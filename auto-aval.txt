@@ -1,7 +1,7 @@
 17646_FabioGoncalves_20481_JoaoPortelinha_TP_PO2_2021-2022
 
 E1 - 2,0
-E2 - 1,0*
+E2 - 2,0
 E3 - 2,0
 E4 - 
 
@@ -9,6 +9,6 @@ NE1 - 2,5
 NE2 - 2,5
 
 
-TOTAL = 10
+TOTAL = 11
 
 Tempo gasto no projeto = 

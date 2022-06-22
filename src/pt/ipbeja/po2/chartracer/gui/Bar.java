@@ -12,7 +12,7 @@ public class Bar extends Rectangle implements Comparable<Rectangle> {
 
     private final int height = 50;
 
-    public Bar(double positionY, double width,Color barColor, Color strokeColor){
+    public Bar(double positionY, double width, Color barColor, Color strokeColor) {
         this.setY(positionY);
         this.setHeight(this.height);
         this.setFill(barColor);
@@ -25,14 +25,11 @@ public class Bar extends Rectangle implements Comparable<Rectangle> {
     @Override
     public int compareTo(Rectangle bar) {
 
-        if(this.getWidth() > bar.getWidth()){
+        if (this.getWidth() > bar.getWidth()) {
             return 1;
-        }
-
-        else if(this.getWidth() < bar.getWidth()){
+        } else if (this.getWidth() < bar.getWidth()) {
             return -1;
-        }
-        else{
+        } else {
             return 0;
         }
 

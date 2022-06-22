@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class Model implements View{
+public class Model implements View, Comparable<Integer> {
 
     private List<String> stats;
     private final Board board;
@@ -32,15 +32,16 @@ public class Model implements View{
     private Color strokeColor;
     private Color barColor = Color.RED;
     private final int animationTime = 20000;
+    public int pop;
 
-    public Model(Board board, BarChartRacerStart barChartRacerStart){
+    public Model(Board board, BarChartRacerStart barChartRacerStart) {
         this.barChartRacerStart = barChartRacerStart;
         this.barChartRacerStart.setView(this);
         this.board = board;
         this.board.setView(this);
     }
 
-    public void path(String path){
+    public void path(String path) {
         Path p = Paths.get(path);
         try {
             this.stats = Files.readAllLines(p);
@@ -52,7 +53,7 @@ public class Model implements View{
         }
     }
 
-     public String[][] readFileToStringArray2D(String filename, String separator) {
+    public String[][] readFileToStringArray2D(String filename, String separator) {
         try {
             List<String> lines = Files.readAllLines(Paths.get(filename));
             String[][] allData = new String[lines.size()][];
@@ -63,17 +64,17 @@ public class Model implements View{
         } catch (IOException e) {
             String errorMessage = "Error reading file " + filename;
             //showError(errorMessage);
-            System.out.println(errorMessage + " - Exception " + e.toString())  ;
+            System.out.println(errorMessage + " - Exception " + e.toString());
             return new String[0][];
         }
     }
 
-    public void sleep(Bar bar, Group group, Double position){
-        Thread t = new Thread( () ->  {
-            for(int j = 0; j < 20; j++) {
-                Platform.runLater( () ->
+    public void sleep(Bar bar, Group group, Double position) {
+        Thread t = new Thread(() -> {
+            for (int j = 0; j < 20; j++) {
+                Platform.runLater(() ->
                         {
-                            Bar barNew = new Bar(position, bar.getWidth(),Color.VIOLET, Color.BLACK);
+                            Bar barNew = new Bar(position, bar.getWidth(), Color.VIOLET, Color.BLACK);
                             barNew.setX(500);
                             group.getChildren().addAll(barNew);
                         }
@@ -119,7 +120,7 @@ public class Model implements View{
             info.setContentText("""
                     Fábio Gonçalves nº17646
                     João Portelinha nº20481
-                    
+                                        
                     UC: Programação Orientada por Objetos (PO2)
                     """);
             info.show();
@@ -151,7 +152,7 @@ public class Model implements View{
             dialog.setContentText("Cor:");
 
             Optional<String> result = dialog.showAndWait();
-            if (result.isPresent()){
+            if (result.isPresent()) {
                 switch (result.get()) {
                     case "Preto" -> strokeColor = Color.BLACK;
                     case "Azul" -> strokeColor = Color.BLUE;
@@ -172,7 +173,7 @@ public class Model implements View{
             dialog.setContentText("Cor:");
 
             Optional<String> result = dialog.showAndWait();
-            if (result.isPresent()){
+            if (result.isPresent()) {
                 switch (result.get()) {
                     case "Laranja" -> barColor = Color.ORANGE;
                     case "Azul" -> barColor = Color.ROYALBLUE;
@@ -273,4 +274,12 @@ public class Model implements View{
 
     }
 
+    @Override
+    public int compareTo(Integer pop) {
+        if (this.pop > pop) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 }
