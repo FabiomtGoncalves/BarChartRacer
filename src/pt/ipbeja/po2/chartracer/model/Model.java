@@ -72,6 +72,8 @@ public class Model implements View, Comparable<Integer>{
         }
     }
 
+
+
     public void sleep(Bar bar, Group group, Double position, String tempCity){
         Thread t = new Thread( () ->  {
                 Platform.runLater( () ->

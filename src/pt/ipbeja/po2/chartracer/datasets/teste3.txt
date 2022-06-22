@@ -1,0 +1,10 @@
+1500,Beijing,China,672,East Asia
+1500,Vijayanagar,India,500,South Asia
+1500,Cairo,Egypt,400,Middle East
+1500,Tabriz,Iran,250,Middle East
+1500,Hangzhou,China,250,East Asia
+2018,São Paulo,Brazil,21698,Latin America
+2018,Mexico City,Mexico,21520,Latin America
+2018,Osaka,Japan,20409,East Asia
+2018,Cairo,Egypt,19850,Middle East
+2018,Dhaka,Bangladesh,19633,South Asia
