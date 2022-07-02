@@ -14,77 +14,25 @@ import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import pt.ipbeja.po2.chartracer.gui.Names;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
-public class Model implements View, Comparable<Integer>{
+public class Model implements Comparable<Integer>{
+
+    private final Board board = new Board(this);
+    private final ReadFile readFile = new ReadFile();
 
     private List<String> stats;
-    private final Board board;
-    private final BarChartRacerStart barChartRacerStart;
     private String year;
     private String city;
     private Color strokeColor;
+    private View view;
     private Color barColor = Color.RED;
-    private final int animationTime = 20000;
     private double count = 0;
     public int pop = 0;
-
-    public Model(Board board, BarChartRacerStart barChartRacerStart){
-        this.barChartRacerStart = barChartRacerStart;
-        this.barChartRacerStart.setView(this);
-        this.board = board;
-        this.board.setView(this);
-    }
-
-    /**
-     * @param path Path to the file
-     * Gets the file path
-     */
-    public void path(String path){
-        Path p = Paths.get(path);
-        try {
-            this.stats = Files.readAllLines(p);
-        } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Erro ao Ler o Ficheiro de Texto.");
-            alert.showAndWait();
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * @param filename  file to read
-     * @param separator separator for tokens in each line
-     * @return array with one array of tokens in each position
-     *         or empty array if error reading file
-     *
-     * read all lines to one array of arrays of Strings
-     * Source: Projeto de IP 2020-2021
-     */
-     public String[][] readFileToStringArray2D(String filename, String separator) {
-        try {
-            List<String> lines = Files.readAllLines(Paths.get(filename));
-            String[][] allData = new String[lines.size()][];
-            for (int i = 0; i < lines.size(); i++) {
-                allData[i] = lines.get(i).split(separator);
-            }
-            return allData;
-        } catch (IOException e) {
-            String errorMessage = "Error reading file " + filename;
-            //showError(errorMessage);
-            System.out.println(errorMessage + " - Exception " + e.toString())  ;
-            return new String[0][];
-        }
-    }
 
 
     /**
@@ -230,7 +178,7 @@ public class Model implements View, Comparable<Integer>{
         biggestInX.setOnAction(event -> {
             group.getChildren().clear();
 
-            String[][] inputFile = this.readFileToStringArray2D(path, ",");
+            String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
             List<String> choices = new ArrayList<>();
 
             for (String[] strings : inputFile) {
@@ -254,7 +202,7 @@ public class Model implements View, Comparable<Integer>{
         smallestInX.setOnAction(event -> {
             group.getChildren().clear();
 
-            String[][] inputFile = this.readFileToStringArray2D(path, ",");
+            String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
             List<String> choices = new ArrayList<>();
 
             for (String[] strings : inputFile) {
@@ -278,7 +226,7 @@ public class Model implements View, Comparable<Integer>{
         specificCity.setOnAction(event -> {
             group.getChildren().clear();
 
-            String[][] inputFile = this.readFileToStringArray2D(path, ",");
+            String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
             List<String> choices = new ArrayList<>();
 
             for (String[] strings : inputFile) {
@@ -300,7 +248,6 @@ public class Model implements View, Comparable<Integer>{
         });
 
         return menuBar;
-
     }
 
     @Override
@@ -310,6 +257,10 @@ public class Model implements View, Comparable<Integer>{
         } else {
             return 0;
         }
+    }
+
+    public void setView(View view) {
+        this.view = view;
     }
 
 }

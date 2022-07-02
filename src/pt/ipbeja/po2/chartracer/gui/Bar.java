@@ -43,6 +43,5 @@ public class Bar extends Rectangle implements Comparable<Rectangle> {
         } else {
             return 0;
         }
-
     }
 }

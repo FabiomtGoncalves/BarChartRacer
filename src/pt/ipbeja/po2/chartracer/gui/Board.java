@@ -4,7 +4,7 @@
  **/
 
 package pt.ipbeja.po2.chartracer.gui;
-
+//TODO Mudar de Arrays para Listas
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import pt.ipbeja.po2.chartracer.model.Model;
+import pt.ipbeja.po2.chartracer.model.ReadFile;
 import pt.ipbeja.po2.chartracer.model.View;
 
 import java.io.File;
@@ -21,20 +22,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-public class Board{
+public class Board implements View{
 
     private Names names;
     private Integer positionY = 50;
-    private View view;
     private final int reset = 50;
     private final int numOfObjs = 12;
-    private final BarChartRacerStart start = new BarChartRacerStart();
-    private final Model model = new Model(this, start);
+    private final ReadFile readFile = new ReadFile();
+    private Model model;
 
     private Label dateYear;
 
-    public void setView(View view) {
-        this.view = view;
+    public Board(Model model) {
+        this.model = model;
+        this.model.setView(this);
     }
 
     /**
@@ -48,7 +49,7 @@ public class Board{
         positionY = reset;
         Names title = new Names("The biggest", 0, 30.0);
         group.getChildren().add(title);
-        String[][] inputFile = view.readFileToStringArray2D(path, ",");
+        String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
         String[] cityNames = new String[numOfObjs];
         int[] population = new int[numOfObjs];
         Bar[] rectArray = new Bar[numOfObjs];
@@ -130,8 +131,9 @@ public class Board{
                             }
                         }
                     }*/
+                    //Arrays.parallelSort(rectArray[smallestPos].getWidth(), Comparator.comparingDouble(o -> Double.parseDouble(o[1])));//TODO
 
-                    view.sleep(bar2, group, position, tempCity, date, dateYear);
+                    model.sleep(bar2, group, position, tempCity, date, dateYear);
 
                 }
             }
@@ -159,7 +161,7 @@ public class Board{
 
         Bar[] bars = new Bar[numOfObjs];
 
-        String[][] inputFile = view.readFileToStringArray2D(path, ",");
+        String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
         String[][] data = new String[12][2];
         int count = 0;
 
@@ -215,14 +217,14 @@ public class Board{
         title.setText("Population of " + city + " through the years");
         group.getChildren().add(title);
 
-        String[][] inputFile = view.readFileToStringArray2D(path, ",");
+        String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
 
         for (String[] strings : inputFile) {
             if (strings.length > 2) {
                 if (strings[1].equals(city)) {
                     Bar bar = new Bar(positionY, Double.parseDouble(strings[3]) / 50, barColor, strokeColor);
                     //group.getChildren().addAll(bar);
-                    view.sleep(bar, group, Double.valueOf(positionY), city, "", dateYear);
+                    model.sleep(bar, group, Double.valueOf(positionY), city, "", dateYear);
                 }
             }
         }
@@ -236,7 +238,7 @@ public class Board{
         title.setText("The least populous cities in the world in " + year);
         group.getChildren().add(title);
 
-        String[][] inputFile = view.readFileToStringArray2D(path, ",");
+        String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
         int count = 0;
         String[][] data = new String[count][2];
         int asdasda = 0;
@@ -276,7 +278,7 @@ public class Board{
      */
     public void generateFile(String path, Stage stage){
 
-        String[][] inputFile = view.readFileToStringArray2D(path, ",");
+        String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
 
         int numDataSets = 0;
         String firstDate = "";
