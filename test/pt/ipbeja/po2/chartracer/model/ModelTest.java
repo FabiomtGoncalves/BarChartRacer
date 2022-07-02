@@ -6,8 +6,7 @@
 package pt.ipbeja.po2.chartracer.model;
 
 import org.junit.jupiter.api.Test;
-import pt.ipbeja.po2.chartracer.gui.BarChartRacerStart;
-import pt.ipbeja.po2.chartracer.gui.Board;
+
 
 import java.io.File;
 import java.io.FileWriter;
@@ -16,10 +15,8 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ModelTest {
-    Board board = new Board();
-    BarChartRacerStart barChartRacerStart = new BarChartRacerStart();
-    Model model = new Model(board, barChartRacerStart);
-    String[][] file = model.readFileToStringArray2D("src/pt/ipbeja/po2/chartracer/datasets/cities.txt", ",");
+    ReadFile readFile = new ReadFile();
+    String[][] file = readFile.readFileToStringArray2D("src/pt/ipbeja/po2/chartracer/datasets/cities.txt", ",");
 
     String[][] firstYear = new String[12][5];
     String[][] lastYear = new String[12][5];
