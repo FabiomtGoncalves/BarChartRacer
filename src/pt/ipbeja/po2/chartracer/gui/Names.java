@@ -15,5 +15,4 @@ public class Names extends Text {
         this.setY(positionY);
         this.setFont(new Font(fontSize));
     }
-
 }
