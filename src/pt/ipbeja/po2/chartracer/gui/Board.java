@@ -50,24 +50,34 @@ public class Board implements View{
         Names title = new Names("The biggest", 0, 30.0);
         group.getChildren().add(title);
         String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
+
         String[] cityNames = new String[numOfObjs];
-        int[] population = new int[numOfObjs];
-        Bar[] rectArray = new Bar[numOfObjs];
-        Names[] textArray = new Names[numOfObjs];
+
+        //int[] population = new int[numOfObjs];
+        List<Integer> population = new ArrayList<>();
+
+        //Bar[] rectArray = new Bar[numOfObjs];
+        List<Bar> rectArray = new ArrayList<>();
+
+        //Names[] textArray = new Names[numOfObjs];
+        List<Names> textArray = new ArrayList<>();
+
+
         this.dateYear = new Label("0");
         group.getChildren().addAll(dateYear);
 
-        for (int i = 0; i < population.length; i++) {
+        for (int i = 0; i < numOfObjs; i++) {
             Bar bar = new Bar(positionY, 0, barColor, strokeColor);
             names = new Names(cityNames[i], positionY + 30, 20.0);
-            textArray[i] = names;
-            rectArray[i] = bar;
+            textArray.add(i, names);
+            rectArray.add(i, bar);
             group.getChildren().addAll(names);
             positionY += 70;
-
         }
 
         for (String[] strings : inputFile) {
+
+
 
             if (strings.length > 2) {
 
@@ -75,9 +85,10 @@ public class Board implements View{
                 Bar bar2 = new Bar(positionY, tempPop, barColor, strokeColor);
                 String tempCity = strings[1];
                 String date = strings[0];
-                List<String> intList = new ArrayList<>(Arrays.asList(cityNames));
 
-                double smallest = rectArray[0].getWidth();
+                List<String> cityList = new ArrayList<>(Arrays.asList(cityNames));
+
+                double smallest = rectArray.get(0).getWidth();
 
                 int smallestPos = 0;
                 int duplicate = 0;
@@ -91,31 +102,35 @@ public class Board implements View{
                     }
                 }
 
-                for (int j = 0; j < rectArray.length; j++) {
-                    if (smallest > rectArray[j].getWidth() && !intList.contains(tempCity)) {
-                        smallest = rectArray[j].getWidth();
+                //Collections.sort(rectArray);
+
+                for (int j = 0; j < numOfObjs; j++) {
+                    if (smallest > rectArray.get(j).getWidth() && !cityList.contains(tempCity)) {
+                        smallest = rectArray.get(j).getWidth();
+                        System.out.println("entrou");
                         smallestPos = j;
                     }
-                    else if(intList.contains(tempCity)){
+                    else if(cityList.contains(tempCity)){
                         smallestPos = duplicate;
                         break;
                     }
                 }
 
-                int result = bar2.compareTo(rectArray[smallestPos]);
+                int result = bar2.compareTo(rectArray.get(smallestPos));
+
 
                 if (result > 0) {
 
-                    double position = rectArray[smallestPos].getY();
+                    double position = rectArray.get(smallestPos).getY();
 
-                    rectArray[smallestPos].setWidth(bar2.getWidth());
-                    textArray[smallestPos].setText(tempCity);
-                    textArray[smallestPos].setX(rectArray[smallestPos].getWidth());
+                    rectArray.get(smallestPos).setWidth(bar2.getWidth());
+                    textArray.get(smallestPos).setText(tempCity);
+                    textArray.get(smallestPos).setX(rectArray.get(smallestPos).getWidth());
 
-                    population[smallestPos] = tempPop;
+                    population.add(smallestPos, tempPop);
                     cityNames[smallestPos] = tempCity;
 
-                    System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
+                    //System.out.println("Pop: " + population + "Cities: " + Arrays.toString(cityNames));
 
                     /*String[] tempVar;
 
@@ -139,7 +154,7 @@ public class Board implements View{
             }
         }
 
-        System.out.println("Pop: " + Arrays.toString(population) + "Cities: " + Arrays.toString(cityNames));
+        System.out.println("Pop: " + population + "Cities: " + Arrays.toString(cityNames));
 
     }
 
