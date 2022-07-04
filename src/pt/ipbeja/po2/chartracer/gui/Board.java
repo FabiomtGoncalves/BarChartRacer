@@ -4,7 +4,7 @@
  **/
 
 package pt.ipbeja.po2.chartracer.gui;
-//TODO Mudar de Arrays para Listas
+
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
@@ -52,10 +52,7 @@ public class Board implements View{
         String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
         String[][] data = new String[numOfObjs][2];//TODO
 
-        //Bar[] rectArray = new Bar[numOfObjs];
         List<Bar> rectArray = new ArrayList<>();
-
-        //Names[] textArray = new Names[numOfObjs];
         List<Names> textArray = new ArrayList<>();
 
 
@@ -79,7 +76,6 @@ public class Board implements View{
                 City city = new City(strings[1], Integer.parseInt(strings[3]) / 100);
                 String date = strings[0];
 
-                //https://stackoverflow.com/questions/11447780/convert-two-dimensional-array-to-list-in-java
                 List<String> cityList = new ArrayList<>();
                 for (int i = 0; i < data.length; i++) {
                     cityList.add(data[i][0]);
@@ -114,7 +110,6 @@ public class Board implements View{
                 for (int j = 0; j < numOfObjs; j++) {
                     if (smallest > rectArray.get(j).getWidth() && !cityList.contains(city.getCityName())) {
                         smallest = rectArray.get(j).getWidth();
-                        System.out.println("entrou");
                         smallestPos = j;
                     }
                     else if(cityList.contains(city.getCityName())){
@@ -122,10 +117,8 @@ public class Board implements View{
                         break;
                     }
                 }
-                //City city2 = new City(cityNames[smallestPos], population[smallestPos]);
                 City city2 = new City(data[smallestPos][0], Integer.parseInt(data[smallestPos][1]));
                 int result = city.compareTo(city2);
-
 
                 if (result > 0) {
 
@@ -138,30 +131,10 @@ public class Board implements View{
                     data[smallestPos][0] = city.getCityName();
                     data[smallestPos][1]  = String.valueOf(city.getPopulation());
 
-                    //System.out.println("Pop: " + population + "Cities: " + Arrays.toString(cityNames));
-
-                    /*String[] tempVar;
-
-                    for (int i = 0; i < population.length; i++) {
-                        for (int j = 0; j < population.length; j++) {
-                            model.pop = population[i];
-                            int resultSort = model.compareTo(population[j]);
-
-                            if(resultSort > 0) {
-                                tempVar = population[j];
-                                data[j] = data[i];
-                                data[i] = tempVar;
-                            }
-                        }
-                    }*/
-                    //Arrays.parallelSort(rectArray[smallestPos].getWidth(), Comparator.comparingDouble(o -> Double.parseDouble(o[1])));//TODO
-
                     model.sleep(city.getPopulation(), group, position, city.getCityName(), date, dateYear);
-
                 }
             }
         }
-
         System.out.println("Cities: " + Arrays.deepToString(data));
 
     }
@@ -279,8 +252,6 @@ public class Board implements View{
             }
         }
 
-
-
         Arrays.parallelSort(data, Comparator.comparingInt(o -> Integer.parseInt(o[1])));
 
         for (int i = 0; i < data.length; i++) {
@@ -347,7 +318,6 @@ public class Board implements View{
                 "Maximum value considering all data sets: " + max, "Minimum value considering all data sets: " + min};
 
         try {
-
             FileChooser chooser = new FileChooser();
             chooser.setInitialDirectory(new File("..\\17646_FabioGoncalves_20481_JoaoPortelinha_TP_PO2_2021-2022\\src\\pt\\ipbeja\\po2\\chartracer\\datasets"));
             chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
