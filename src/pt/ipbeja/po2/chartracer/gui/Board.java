@@ -15,10 +15,9 @@ import javafx.stage.Stage;
 import pt.ipbeja.po2.chartracer.model.Model;
 import pt.ipbeja.po2.chartracer.model.ReadFile;
 import pt.ipbeja.po2.chartracer.model.View;
+import pt.ipbeja.po2.chartracer.model.WriteToFile;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -29,6 +28,7 @@ public class Board implements View{
     private final int reset = 50;
     private final int numOfObjs = 12;
     private final ReadFile readFile = new ReadFile();
+    private final WriteToFile writeToFile = new WriteToFile();
     private Model model;
 
     private Label dateYear;
@@ -50,11 +50,7 @@ public class Board implements View{
         Names title = new Names("The biggest", 0, 30.0);
         group.getChildren().add(title);
         String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
-
-        String[] cityNames = new String[numOfObjs];
-
-        //int[] population = new int[numOfObjs];
-        List<Integer> population = new ArrayList<>();
+        String[][] data = new String[numOfObjs][2];//TODO
 
         //Bar[] rectArray = new Bar[numOfObjs];
         List<Bar> rectArray = new ArrayList<>();
@@ -68,67 +64,79 @@ public class Board implements View{
 
         for (int i = 0; i < numOfObjs; i++) {
             Bar bar = new Bar(positionY, 0, barColor, strokeColor);
-            names = new Names(cityNames[i], positionY + 30, 20.0);
+            names = new Names(data[i][0], positionY + 30, 20.0);
             textArray.add(i, names);
             rectArray.add(i, bar);
             group.getChildren().addAll(names);
             positionY += 70;
+
+            data[i][0] = "";
+            data[i][1] = "0";
         }
 
         for (String[] strings : inputFile) {
-
-
-
             if (strings.length > 2) {
-
-                int tempPop = Integer.parseInt(strings[3]) / 100;
-                Bar bar2 = new Bar(positionY, tempPop, barColor, strokeColor);
-                String tempCity = strings[1];
+                City city = new City(strings[1], Integer.parseInt(strings[3]) / 100);
                 String date = strings[0];
 
-                List<String> cityList = new ArrayList<>(Arrays.asList(cityNames));
+                //https://stackoverflow.com/questions/11447780/convert-two-dimensional-array-to-list-in-java
+                List<String> cityList = new ArrayList<>();
+                for (int i = 0; i < data.length; i++) {
+                    cityList.add(data[i][0]);
+                }
+
 
                 double smallest = rectArray.get(0).getWidth();
 
                 int smallestPos = 0;
                 int duplicate = 0;
 
-                for (int i = 0; i < cityNames.length; i++) {
-                    if (cityNames[i] == null){
+                Arrays.sort(data, new Comparator<String[]>() {
+                    @Override
+                    public int compare(String[] array1, String[] array2) {
+                        Integer i1 = Integer.parseInt(array1[1]);
+                        Integer i2 = Integer.parseInt(array2[1]);
+
+                        return i2.compareTo(i1);
+                    }
+                });
+                System.out.println(Arrays.deepToString(data));
+
+                for (int i = 0; i < data.length; i++) {
+                    if (data[i][0].equals("")){
                         break;
                     }
-                    if (cityNames[i].equals(tempCity)){
+                    if (data[i][0].equals(city.getCityName())){
                         duplicate = i;
                     }
                 }
 
-                //Collections.sort(rectArray);
-
                 for (int j = 0; j < numOfObjs; j++) {
-                    if (smallest > rectArray.get(j).getWidth() && !cityList.contains(tempCity)) {
+                    if (smallest > rectArray.get(j).getWidth() && !cityList.contains(city.getCityName())) {
                         smallest = rectArray.get(j).getWidth();
                         System.out.println("entrou");
                         smallestPos = j;
                     }
-                    else if(cityList.contains(tempCity)){
+                    else if(cityList.contains(city.getCityName())){
                         smallestPos = duplicate;
                         break;
                     }
                 }
-
-                int result = bar2.compareTo(rectArray.get(smallestPos));
+                //City city2 = new City(cityNames[smallestPos], population[smallestPos]);
+                City city2 = new City(data[smallestPos][0], Integer.parseInt(data[smallestPos][1]));
+                int result = city.compareTo(city2);
 
 
                 if (result > 0) {
 
                     double position = rectArray.get(smallestPos).getY();
 
-                    rectArray.get(smallestPos).setWidth(bar2.getWidth());
-                    textArray.get(smallestPos).setText(tempCity);
+                    rectArray.get(smallestPos).setWidth(city.getPopulation());
+                    textArray.get(smallestPos).setText(city.getCityName());
                     textArray.get(smallestPos).setX(rectArray.get(smallestPos).getWidth());
 
-                    population.add(smallestPos, tempPop);
-                    cityNames[smallestPos] = tempCity;
+                    data[smallestPos][0] = city.getCityName();
+                    data[smallestPos][1]  = String.valueOf(city.getPopulation());
 
                     //System.out.println("Pop: " + population + "Cities: " + Arrays.toString(cityNames));
 
@@ -148,13 +156,13 @@ public class Board implements View{
                     }*/
                     //Arrays.parallelSort(rectArray[smallestPos].getWidth(), Comparator.comparingDouble(o -> Double.parseDouble(o[1])));//TODO
 
-                    model.sleep(bar2, group, position, tempCity, date, dateYear);
+                    model.sleep(city.getPopulation(), group, position, city.getCityName(), date, dateYear);
 
                 }
             }
         }
 
-        System.out.println("Pop: " + population + "Cities: " + Arrays.toString(cityNames));
+        System.out.println("Cities: " + Arrays.deepToString(data));
 
     }
 
@@ -177,7 +185,7 @@ public class Board implements View{
         Bar[] bars = new Bar[numOfObjs];
 
         String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
-        String[][] data = new String[12][2];
+        String[][] data = new String[12][2];//TODO
         int count = 0;
 
 
@@ -239,7 +247,7 @@ public class Board implements View{
                 if (strings[1].equals(city)) {
                     Bar bar = new Bar(positionY, Double.parseDouble(strings[3]) / 50, barColor, strokeColor);
                     //group.getChildren().addAll(bar);
-                    model.sleep(bar, group, Double.valueOf(positionY), city, "", dateYear);
+                    //model.sleep(bar, group, Double.valueOf(positionY), city, "", dateYear);//TODO
                 }
             }
         }
@@ -338,7 +346,6 @@ public class Board implements View{
                 "Average number of lines in each data set: " + (numLines / numDataSets), "Number of columns in each data set: " + numCols,
                 "Maximum value considering all data sets: " + max, "Minimum value considering all data sets: " + min};
 
-
         try {
 
             FileChooser chooser = new FileChooser();
@@ -348,12 +355,7 @@ public class Board implements View{
             File file = chooser.showSaveDialog(stage);
             Path path2 = file.toPath();
 
-            try {
-                Files.write(path2, List.of(datasetData));
-            } catch (IOException e) {
-                System.out.println("Não foi possível escrever o ficheiro.");
-                e.printStackTrace();
-            }
+            writeToFile.write(path2, List.of(datasetData));
 
         } catch (Exception e) {
             System.out.println("Opção de guardar ficheiro cancelada.");
@@ -368,5 +370,4 @@ public class Board implements View{
         System.out.println("Maximum value considering all data sets: " + max);
         System.out.println("Minimum value considering all data sets: " + min);
     }
-
 }

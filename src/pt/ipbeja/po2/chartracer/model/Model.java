@@ -36,18 +36,18 @@ public class Model implements Comparable<Integer>{
 
 
     /**
-     * @param bar
+     * @param population
      * @param group
      * @param position
      * @param name
      * read all lines to one array of arrays of Strings
      * Source: Projeto de IP 2020-2021
      */
-    public void sleep(Bar bar, Group group, Double position, String name, String date, Label dateYear){
+    public void sleep(int population, Group group, Double position, String name, String date, Label dateYear){
         Thread t = new Thread( () ->  {
                 Platform.runLater( () ->
                         {
-                            Bar barNew = new Bar(position, bar.getWidth() + count,barColor, strokeColor);
+                            Bar barNew = new Bar(position, population + count,barColor, strokeColor);
                             //Text text = new Text();
                             //text.setText(name);
                             //text.setX(barNew.getWidth());

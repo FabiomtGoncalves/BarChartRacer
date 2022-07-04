@@ -8,7 +8,7 @@ package pt.ipbeja.po2.chartracer.gui;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class Bar extends Rectangle implements Comparable<Rectangle> {
+public class Bar extends Rectangle{
 
     private final int height = 50;
 
@@ -26,22 +26,5 @@ public class Bar extends Rectangle implements Comparable<Rectangle> {
         this.setWidth(width);
         this.setStrokeWidth(5);
         this.setStroke(strokeColor);
-    }
-
-    /**
-     * @param bar Rectangle used for comparison
-     * Function to compare bars
-     * @return 1, -1 or 0
-     */
-    @Override
-    public int compareTo(Rectangle bar) {
-
-        if (this.getWidth() > bar.getWidth()) {
-            return 1;
-        } else if (this.getWidth() < bar.getWidth()) {
-            return -1;
-        } else {
-            return 0;
-        }
     }
 }
