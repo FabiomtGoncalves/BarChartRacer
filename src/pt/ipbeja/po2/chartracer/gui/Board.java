@@ -5,7 +5,11 @@
 
 package pt.ipbeja.po2.chartracer.gui;
 
+import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.scene.Group;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -20,6 +24,7 @@ import pt.ipbeja.po2.chartracer.model.WriteToFile;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 public class Board implements View{
 
@@ -30,113 +35,15 @@ public class Board implements View{
     private final ReadFile readFile = new ReadFile();
     private final WriteToFile writeToFile = new WriteToFile();
     private Model model;
+    private Color barColor = Color.RED;
+    private View view;
+
 
     private Label dateYear;
 
     public Board(Model model) {
         this.model = model;
         this.model.setView(this);
-    }
-
-    /**
-     * @param group
-     * @param path Path of the chosen dataset
-     * @param barColor Color of the fill for Bar
-     * @param strokeColor Color of the stroke for Bar
-     */
-    public void biggest(Group group, String path, Color barColor, Color strokeColor) {
-
-        positionY = reset;
-        Names title = new Names("The biggest", 0, 30.0);
-        group.getChildren().add(title);
-        String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
-        String[][] data = new String[numOfObjs][2];//TODO
-
-        List<Bar> rectArray = new ArrayList<>();
-        List<Names> textArray = new ArrayList<>();
-
-
-        this.dateYear = new Label("0");
-        group.getChildren().addAll(dateYear);
-
-        for (int i = 0; i < numOfObjs; i++) {
-            Bar bar = new Bar(positionY, 0, barColor, strokeColor);
-            names = new Names(data[i][0], positionY + 30, 20.0);
-            textArray.add(i, names);
-            rectArray.add(i, bar);
-            group.getChildren().addAll(names);
-            positionY += 70;
-
-            data[i][0] = "";
-            data[i][1] = "0";
-        }
-
-        for (String[] strings : inputFile) {
-            if (strings.length > 2) {
-                City city = new City(strings[1], Integer.parseInt(strings[3]) / 100);
-                String date = strings[0];
-
-                List<String> cityList = new ArrayList<>();
-                for (int i = 0; i < data.length; i++) {
-                    cityList.add(data[i][0]);
-                }
-
-
-                double smallest = rectArray.get(0).getWidth();
-
-                int smallestPos = 0;
-                int duplicate = 0;
-
-                Arrays.sort(data, new Comparator<String[]>() {
-                    @Override
-                    public int compare(String[] array1, String[] array2) {
-                        Integer i1 = Integer.parseInt(array1[1]);
-                        Integer i2 = Integer.parseInt(array2[1]);
-
-                        return i2.compareTo(i1);
-                    }
-                });
-                System.out.println(Arrays.deepToString(data));
-
-                for (int i = 0; i < data.length; i++) {
-                    if (data[i][0].equals("")){
-                        break;
-                    }
-                    if (data[i][0].equals(city.getCityName())){
-                        duplicate = i;
-                    }
-                }
-
-                for (int j = 0; j < numOfObjs; j++) {
-                    if (smallest > rectArray.get(j).getWidth() && !cityList.contains(city.getCityName())) {
-                        smallest = rectArray.get(j).getWidth();
-                        smallestPos = j;
-                    }
-                    else if(cityList.contains(city.getCityName())){
-                        smallestPos = duplicate;
-                        break;
-                    }
-                }
-                City city2 = new City(data[smallestPos][0], Integer.parseInt(data[smallestPos][1]));
-                int result = city.compareTo(city2);
-
-                if (result > 0) {
-
-                    double position = rectArray.get(smallestPos).getY();
-
-                    rectArray.get(smallestPos).setWidth(city.getPopulation());
-                    textArray.get(smallestPos).setText(city.getCityName());
-                    textArray.get(smallestPos).setX(rectArray.get(smallestPos).getWidth());
-
-                    data[smallestPos][0] = city.getCityName();
-                    data[smallestPos][1]  = String.valueOf(city.getPopulation());
-
-                    model.sleep(city.getPopulation(), group, position, city.getCityName(), date, dateYear);
-                }
-            }
-        }
-        System.out.println("Cities: " + Arrays.deepToString(data));
-
     }
 
     /**
@@ -340,4 +247,59 @@ public class Board implements View{
         System.out.println("Maximum value considering all data sets: " + max);
         System.out.println("Minimum value considering all data sets: " + min);
     }
+
+
+    @Override
+    public void write(String state) {
+        if (state.equals("asd")){
+            System.out.println("funfou");
+            //Alert alert = new Alert(Alert.AlertType.ERROR, "Funfou");
+            //alert.showAndWait();
+        } else{
+            System.out.println("es bonec");
+            //Alert alert = new Alert(Alert.AlertType.ERROR, "Es bonec");
+            //alert.showAndWait();
+        }
+    }
+
+    @Override
+    public void draw(int population, Group group, double position, String cityName, Color strokeColor) {
+        Service<Void> service = new Service<Void>() {
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        final CountDownLatch latch = new CountDownLatch(1);
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    Bar barNew = new Bar(position, population,barColor, strokeColor);
+                                    //Text text = new Text();
+                                    //text.setText(name);
+                                    //text.setX(barNew.getWidth());
+                                    //System.out.println(text.getText());
+                                    //dateYear.setText(date + "");
+                                    group.getChildren().addAll(barNew);
+                                }finally{
+                                    latch.countDown();
+                                }
+                            }
+                        });
+                        latch.await();
+                        return null;
+                    }
+                };
+            }
+        };
+        service.start();
+    }
+
+    @Override
+    public void drawRect(Group group, Names name) {
+        group.getChildren().addAll(name);
+    }
+
+
 }

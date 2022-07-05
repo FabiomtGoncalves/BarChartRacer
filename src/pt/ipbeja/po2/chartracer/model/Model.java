@@ -5,34 +5,134 @@
 
 package pt.ipbeja.po2.chartracer.model;
 
-import pt.ipbeja.po2.chartracer.gui.Bar;
-import pt.ipbeja.po2.chartracer.gui.BarChartRacerStart;
-import pt.ipbeja.po2.chartracer.gui.Board;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import pt.ipbeja.po2.chartracer.gui.*;
 
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 
 public class Model implements Comparable<Integer>{
 
-    private final Board board = new Board(this);
-    private final ReadFile readFile = new ReadFile();
 
-    private List<String> stats;
-    private String year;
-    private String city;
-    private Color strokeColor;
     private View view;
     private Color barColor = Color.RED;
-    private double count = 0;
+    private int count = 0;
+    private Names names;
+    private Integer positionY = 50;
+    private final int reset = 50;
+    private final int numOfObjs = 12;
+    private final ReadFile readFile = new ReadFile();
     public int pop = 0;
+    private Label dateYear;
+
+
+    /**
+     * @param group
+     * @param path Path of the chosen dataset
+     * @param barColor Color of the fill for Bar
+     * @param strokeColor Color of the stroke for Bar
+     */
+    public void chartRace(Group group, String path, Color barColor, Color strokeColor){
+        positionY = reset;
+        Names title = new Names("The biggest", 0, 30.0);
+        group.getChildren().add(title);
+        String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
+        String[][] data = new String[numOfObjs][2];//TODO
+
+        List<Bar> rectArray = new ArrayList<>();
+        List<Names> textArray = new ArrayList<>();
+
+
+        this.dateYear = new Label("0");
+        group.getChildren().addAll(dateYear);
+
+        for (int i = 0; i < numOfObjs; i++) {
+            Bar bar = new Bar(positionY, 0, barColor, strokeColor);
+            names = new Names(data[i][0], positionY + 30, 20.0);
+            textArray.add(i, names);
+            rectArray.add(i, bar);
+            view.drawRect(group,names);
+            //group.getChildren().addAll(names);
+            positionY += 70;
+
+            data[i][0] = "";
+            data[i][1] = "0";
+        }
+
+        for (String[] strings : inputFile) {
+            if (strings.length > 2) {
+                City city = new City(strings[1], Integer.parseInt(strings[3]) / 100);
+                String date = strings[0];
+
+                List<String> cityList = new ArrayList<>();
+                for (int i = 0; i < data.length; i++) {
+                    cityList.add(data[i][0]);
+                }
+
+
+                double smallest = rectArray.get(0).getWidth();
+
+                int smallestPos = 0;
+                int duplicate = 0;
+
+                Arrays.sort(data, new Comparator<String[]>() {
+                    @Override
+                    public int compare(String[] array1, String[] array2) {
+                        Integer i1 = Integer.parseInt(array1[1]);
+                        Integer i2 = Integer.parseInt(array2[1]);
+
+                        return i2.compareTo(i1);
+                    }
+                });
+                System.out.println(Arrays.deepToString(data));
+
+                for (int i = 0; i < data.length; i++) {
+                    if (data[i][0].equals("")){
+                        break;
+                    }
+                    if (data[i][0].equals(city.getCityName())){
+                        duplicate = i;
+                    }
+                }
+
+                for (int j = 0; j < numOfObjs; j++) {
+                    if (smallest > rectArray.get(j).getWidth() && !cityList.contains(city.getCityName())) {
+                        smallest = rectArray.get(j).getWidth();
+                        smallestPos = j;
+                    }
+                    else if(cityList.contains(city.getCityName())){
+                        smallestPos = duplicate;
+                        break;
+                    }
+                }
+                City city2 = new City(data[smallestPos][0], Integer.parseInt(data[smallestPos][1]));
+                int result = city.compareTo(city2);
+
+                if (result > 0) {
+
+                    double position = rectArray.get(smallestPos).getY();
+
+                    rectArray.get(smallestPos).setWidth(city.getPopulation());
+                    textArray.get(smallestPos).setText(city.getCityName());
+                    textArray.get(smallestPos).setX(rectArray.get(smallestPos).getWidth());
+
+                    data[smallestPos][0] = city.getCityName();
+                    data[smallestPos][1]  = String.valueOf(city.getPopulation());
+
+                    view.draw(city.getPopulation(), group, position, city.getCityName(), strokeColor);
+                    //model.sleep(city.getPopulation(), group, position, city.getCityName(), date, dateYear, strokeColor);
+                }
+            }
+        }
+        System.out.println("Cities: " + Arrays.deepToString(data));
+    }
 
 
     /**
@@ -43,18 +143,50 @@ public class Model implements Comparable<Integer>{
      * read all lines to one array of arrays of Strings
      * Source: Projeto de IP 2020-2021
      */
-    public void sleep(int population, Group group, Double position, String name, String date, Label dateYear){
-        Thread t = new Thread( () ->  {
+    public void sleep(int population, Group group, Double position, String name, String date, Label dateYear, Color strokeColor){
+
+       Service<Void> service = new Service<Void>() {
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        final CountDownLatch latch = new CountDownLatch(1);
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    Bar barNew = new Bar(position, population,barColor, strokeColor);
+                                    view.write("asd");
+                                    //Text text = new Text();
+                                    //text.setText(name);
+                                    //text.setX(barNew.getWidth());
+                                    //System.out.println(text.getText());
+                                    dateYear.setText(date + "");
+                                    group.getChildren().addAll(barNew);
+                                }finally{
+                                    latch.countDown();
+                                }
+                            }
+                        });
+                        latch.await();
+                        return null;
+                    }
+                };
+            }
+        };
+        service.start();
+
+        /*Thread t = new Thread( () ->  {
                 Platform.runLater( () ->
                         {
-                            Bar barNew = new Bar(position, population + count,barColor, strokeColor);
+                            Bar barNew = new Bar(position, population,barColor, strokeColor);
                             //Text text = new Text();
                             //text.setText(name);
                             //text.setX(barNew.getWidth());
                             //System.out.println(text.getText());
                             dateYear.setText(date + "");
                             group.getChildren().addAll(barNew);
-                            count += 0.1;
                         }
                 );
 
@@ -64,191 +196,11 @@ public class Model implements Comparable<Integer>{
                     e.printStackTrace();
                 }
         });
-        t.start();
+        t.start();*/
+
     }
 
-    public MenuBar createMenu(Group group, String path, Stage stage) {
 
-        MenuBar menuBar = new MenuBar();
-        Menu menu = new Menu("Bar Chart Racer");
-
-        Menu settings = new Menu("Definições");
-        MenuItem devs = new MenuItem("Devs");
-        MenuItem restart = new MenuItem("Reiniciar programa");
-        MenuItem close = new MenuItem("Fechar programa");
-        settings.getItems().addAll(devs, restart, close);
-
-        Menu skin = new Menu("Skin");
-        MenuItem defaultSkin = new MenuItem("Default");
-        MenuItem stroke = new MenuItem("Stroke");
-        MenuItem bar = new MenuItem("Bar Color");
-        skin.getItems().addAll(defaultSkin, stroke, bar);
-
-        Menu data = new Menu("Data");
-        MenuItem generateFile = new MenuItem("Generate File");
-        data.getItems().addAll(generateFile);
-
-        menuBar.getMenus().addAll(menu, skin, data, settings);
-
-        devs.setOnAction(actionEvent -> {
-            Alert info = new Alert(Alert.AlertType.INFORMATION);
-            info.setTitle("Devs");
-            info.setHeaderText("Elaborado Por:");
-            info.setContentText("""
-                    Fábio Gonçalves nº17646
-                    João Portelinha nº20481
-                    
-                    UC: Programação Orientada por Objetos (PO2)
-                    """);
-            info.show();
-        });
-
-        restart.setOnAction(actionEvent -> {
-            BarChartRacerStart barChartRacerStart = new BarChartRacerStart();
-            barChartRacerStart.start(stage);
-        });
-
-        close.setOnAction(actionEvent -> {
-            System.exit(0);
-        });
-
-        defaultSkin.setOnAction(actionEvent -> {
-            strokeColor = Color.TRANSPARENT;
-            barColor = Color.RED;
-        });
-
-        stroke.setOnAction(actionEvent -> {
-            List<String> choices = new ArrayList<>();
-            choices.add("Preto");
-            choices.add("Azul");
-            choices.add("Verde");
-
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha uma cor", choices);
-            dialog.setTitle("Skin");
-            dialog.setHeaderText("Cor da Stroke");
-            dialog.setContentText("Cor:");
-
-            Optional<String> result = dialog.showAndWait();
-            if (result.isPresent()){
-                switch (result.get()) {
-                    case "Preto" -> strokeColor = Color.BLACK;
-                    case "Azul" -> strokeColor = Color.BLUE;
-                    case "Verde" -> strokeColor = Color.GREEN;
-                }
-            }
-        });
-
-        bar.setOnAction(actionEvent -> {
-            List<String> choices = new ArrayList<>();
-            choices.add("Preto");
-            choices.add("Azul");
-            choices.add("Verde");
-
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha uma cor", choices);
-            dialog.setTitle("Skin");
-            dialog.setHeaderText("Cor da Stroke");
-            dialog.setContentText("Cor:");
-
-            Optional<String> result = dialog.showAndWait();
-            if (result.isPresent()){
-                switch (result.get()) {
-                    case "Laranja" -> barColor = Color.ORANGE;
-                    case "Azul" -> barColor = Color.ROYALBLUE;
-                    case "Verde" -> barColor = Color.SPRINGGREEN;
-                }
-            }
-
-        });
-
-        generateFile.setOnAction(actionEvent -> {
-            this.board.generateFile(path, stage);
-        });
-
-        MenuItem biggest = new MenuItem("O Maior de Sempre");
-        MenuItem biggestInX = new MenuItem("Os Maiores em Determinado Espaço de Tempo");
-        MenuItem smallestInX = new MenuItem("Os Menores em Determinado Espaço de Tempo");
-        MenuItem specificCity = new MenuItem("População de Determinada Cidade ao Longo dos Anos");
-        menu.getItems().addAll(biggest, biggestInX, smallestInX, specificCity);
-
-        biggest.setOnAction(event -> {
-            group.getChildren().clear();
-            this.board.biggest(group, path, barColor, strokeColor);
-        });
-
-        biggestInX.setOnAction(event -> {
-            group.getChildren().clear();
-
-            String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
-            List<String> choices = new ArrayList<>();
-
-            for (String[] strings : inputFile) {
-                if (strings.length > 2) {
-                    if (!choices.contains(strings[0])) {
-                        choices.add(strings[0]);
-                    }
-                }
-            }
-
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha um tempo", choices);
-            dialog.setTitle("Tempo Desejado");
-            dialog.setHeaderText("Tempo Desejado");
-            dialog.setContentText("Data / Tempo:");
-
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(year -> this.year = year);
-            this.board.biggestInSpecificYear(group, path, year, barColor, strokeColor);
-        });
-
-        smallestInX.setOnAction(event -> {
-            group.getChildren().clear();
-
-            String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
-            List<String> choices = new ArrayList<>();
-
-            for (String[] strings : inputFile) {
-                if (strings.length > 2) {
-                    if (!choices.contains(strings[0])) {
-                        choices.add(strings[0]);
-                    }
-                }
-            }
-
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha um tempo", choices);
-            dialog.setTitle("Tempo Desejado");
-            dialog.setHeaderText("Tempo Desejado");
-            dialog.setContentText("Data / Tempo:");
-
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(year -> this.year = year);
-            this.board.smallestInSpecificYear(group, path, year, barColor, strokeColor);
-        });
-
-        specificCity.setOnAction(event -> {
-            group.getChildren().clear();
-
-            String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
-            List<String> choices = new ArrayList<>();
-
-            for (String[] strings : inputFile) {
-                if (strings.length > 2) {
-                    if (!choices.contains(strings[1])) {
-                        choices.add(strings[1]);
-                    }
-                }
-            }
-
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha um cidade", choices);
-            dialog.setTitle("Cidade");
-            dialog.setHeaderText("Cidade");
-            dialog.setContentText("Cidade:");
-
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(city -> this.city = city);
-            this.board.specificCity(group, path, city, barColor, strokeColor);
-        });
-
-        return menuBar;
-    }
 
     @Override
     public int compareTo(Integer pop) {
@@ -262,5 +214,6 @@ public class Model implements Comparable<Integer>{
     public void setView(View view) {
         this.view = view;
     }
+
 
 }

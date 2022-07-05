@@ -5,13 +5,19 @@
 
 package pt.ipbeja.po2.chartracer.model;
 
-import java.nio.file.Path;
-import java.util.List;
+import javafx.scene.Group;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import pt.ipbeja.po2.chartracer.gui.Names;
 
 public interface View {
 
-    //void write(Path path, List<String> datasetData);
+    void write(String state);
 
-    //void sleep();
+    void draw(int population, Group group, double position, String cityName, Color strokeColor);
+
+    void drawRect(Group group, Names name);
+
+    //void sleep(int population, Group group, Double position, String name, String date, Label dateYear, Color strokeColor);
 
 }
