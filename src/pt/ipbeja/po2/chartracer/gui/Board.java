@@ -8,18 +8,13 @@ package pt.ipbeja.po2.chartracer.gui;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import pt.ipbeja.po2.chartracer.model.Model;
-import pt.ipbeja.po2.chartracer.model.ReadFile;
 import pt.ipbeja.po2.chartracer.model.View;
 import pt.ipbeja.po2.chartracer.model.WriteToFile;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
@@ -27,19 +22,19 @@ import java.util.concurrent.CountDownLatch;
 
 public class Board implements View{
 
-    private Integer positionY = 50;
-    private final ReadFile readFile = new ReadFile();
     private final WriteToFile writeToFile = new WriteToFile();
-    private Model model;
-    private Color barColor = Color.RED;
+    private final int dateY = 900;
+    private final int dateX = 1600;
+    private final int removeY = 800;
+    private final int removeX = 100;
+
 
     public Board(Model model) {
-        this.model = model;
-        this.model.setView(this);
+        model.setView(this);
     }
 
     @Override
-    public void draw(int population, Group group, double position, String cityName, Color strokeColor, Names textArrays) {
+    public void draw(int population, Group group, double position, String cityName, Color barColor, Color strokeColor, Names textArrays, String date) {
         Service<Void> service = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
@@ -54,7 +49,12 @@ public class Board implements View{
                                     Bar barNew = new Bar(position, population,barColor, strokeColor);
                                     Names city = new Names(cityName, position + 25, 20.0);
                                     Names size = new Names("" + population * 75, position + 40, 15.0);
-                                    group.getChildren().addAll(barNew, city, size);
+                                    Bar remove = new Bar(removeY, 250, Color.WHITESMOKE, Color.WHITESMOKE);
+                                    remove.setHeight(removeX);
+                                    remove.setX(dateX);
+                                    Names currentDate = new Names(date, dateY, 100.0);
+                                    currentDate.setX(dateX);
+                                    group.getChildren().addAll(barNew, city, size, remove, currentDate);
                                 }finally{
                                     latch.countDown();
                                 }
@@ -76,11 +76,11 @@ public class Board implements View{
     }
 
     @Override
-    public void drawBiggestInSpecificYear(Group group, int position, String population, String name, Color barcolor, Color strokeColor) {
-        Bar bar = new Bar(position, Integer.parseInt(population) / 50, barColor, strokeColor);
-        Names names = new Names(name, position + 35, 20.0);
-        Names pop = new Names(population, position + 15, 20.0);
-        group.getChildren().addAll(bar, names, pop);
+    public void drawBiggestInSpecificYear(Group group, int position, String population, String name, Color barColor, Color strokeColor) {
+        Bar bar = new Bar(position, Double.parseDouble(population) / 50, barColor, strokeColor);
+        Names names = new Names(name, position + 25, 20.0);
+        Names size = new Names(population, position + 40, 15.0);
+        group.getChildren().addAll(bar, names, size);
     }
 
 
@@ -96,8 +96,8 @@ public class Board implements View{
     }
 
     @Override
-    public void drawSpecificCityBar(Group group, int position, String barWidth, Color barcolor, Color strokeColor) {
-        Bar bar = new Bar(positionY, Double.parseDouble(barWidth) / 50, barColor, strokeColor);
+    public void drawSpecificCityBar(Group group, int position, String barWidth, Color barColor, Color strokeColor) {
+        Bar bar = new Bar(position, Double.parseDouble(barWidth) / 50, barColor, strokeColor);
         group.getChildren().addAll(bar);
     }
 
