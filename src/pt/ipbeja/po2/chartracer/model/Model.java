@@ -5,9 +5,8 @@
 
 package pt.ipbeja.po2.chartracer.model;
 
-import pt.ipbeja.po2.chartracer.gui.*;
-
 import javafx.stage.Stage;
+import pt.ipbeja.po2.chartracer.gui.*;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import java.util.*;
@@ -23,6 +22,7 @@ public class Model{
     private final int reset = 50;
     private final int numOfObjs = 12;
     private final ReadFile readFile = new ReadFile();
+    private int divisor = 0;
 
     public void setView(View view) {
         this.view = view;
@@ -38,7 +38,7 @@ public class Model{
         positionY = reset;
         view.drawTitle(group, "The biggest");
         String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
-        String[][] data = new String[numOfObjs][2];//TODO
+        String[][] data = new String[numOfObjs][2];
 
         List<Bar> rectArray = new ArrayList<>();
         List<Names> textArray = new ArrayList<>();
@@ -64,6 +64,7 @@ public class Model{
                 for (int i = 0; i < data.length; i++) {
                     cityList.add(data[i][0]);
                 }
+
 
                 double smallest = rectArray.get(0).getWidth();
 
@@ -106,12 +107,14 @@ public class Model{
                     data[smallestPos][0] = city.getCityName();
                     data[smallestPos][1]  = String.valueOf(city.getPopulation());
 
-                    view.draw(city.getPopulation(), group, position, city.getCityName(), strokeColor, textArray.get(smallestPos));
+                    view.draw(city.getPopulation(), group, position, city.getCityName(),
+                            barColor, strokeColor, textArray.get(smallestPos), date);
                 }
             }
         }
         System.out.println("Cities: " + Arrays.deepToString(data));
     }
+
 
     /**
      * @param group
@@ -122,12 +125,35 @@ public class Model{
      * for the information that was chosen.
      */
     public void biggestInSpecificYear(Group group, String path, String year, Color barColor, Color strokeColor) {
-        positionY = 70;
-
+        checkFile(path);
+        System.out.println(checkFile(path));
+        positionY = reset;
+        int datasetSize = 0;
         view.drawTitle(group, "The most populous cities in the world in " + year);
 
         String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
-        String[][] data = new String[12][2];//TODO
+
+        for (String[] strings : inputFile) {
+
+            if (strings.length == 1){
+                try {
+                    Integer.parseInt(strings[0]);
+                    datasetSize = Integer.parseInt(strings[0]);
+                } catch (NumberFormatException ignored) {
+                }
+
+            }
+
+            if (strings.length > 2) {
+
+                if(strings[0].equals(year)){
+                    break;
+                }
+
+            }
+        }
+
+        String[][] data = new String[datasetSize][2];
         int count = 0;
 
 
@@ -148,6 +174,7 @@ public class Model{
         }
     }
 
+
     /**
      * @param group
      * @param path Path of the chosen dataset
@@ -165,7 +192,6 @@ public class Model{
         for (String[] strings : inputFile) {
             if (strings.length > 2) {
                 if (strings[1].equals(city)) {
-
                     view.drawSpecificCityBar(group, positionY, strings[3], barColor, strokeColor);
                 }
             }
@@ -261,4 +287,16 @@ public class Model{
             }
         });
     }
+
+    private int checkFile(String path){
+        String asd = "..\\17646_FabioGoncalves_20481_JoaoPortelinha_TP_PO2_2021-2022\\src\\pt\\ipbeja\\po2\\chartracer\\datasets";
+        switch (path){
+            case "..\\17646_FabioGoncalves_20481_JoaoPortelinha_TP_PO2_2021-2022\\src\\pt\\ipbeja\\po2\\chartracer\\datasets\\cities.txt":
+                divisor = 100;
+                System.out.println("entrou");
+                break;
+        }
+        return divisor;
+    }
+
 }
