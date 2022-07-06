@@ -6,8 +6,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import pt.ipbeja.po2.chartracer.model.Model;
 import pt.ipbeja.po2.chartracer.model.ReadFile;
-import pt.ipbeja.po2.chartracer.model.View;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +16,6 @@ public class CreateMenu {
     private final Board board = new Board(model);
     private final ReadFile readFile = new ReadFile();
     private Color barColor = Color.RED;
-
-    private List<String> stats;
     private String year;
     private String city;
     private Color strokeColor;
@@ -118,19 +114,17 @@ public class CreateMenu {
         });
 
         generateFile.setOnAction(actionEvent -> {
-            this.board.generateFile(path, stage);
+            this.model.generateFile(path, stage);
         });
 
         MenuItem biggest = new MenuItem("O Maior de Sempre");
         MenuItem biggestInX = new MenuItem("Os Maiores em Determinado Espaço de Tempo");
-        MenuItem smallestInX = new MenuItem("Os Menores em Determinado Espaço de Tempo");
         MenuItem specificCity = new MenuItem("População de Determinada Cidade ao Longo dos Anos");
-        menu.getItems().addAll(biggest, biggestInX, smallestInX, specificCity);
+        menu.getItems().addAll(biggest, biggestInX, specificCity);
 
         biggest.setOnAction(event -> {
             group.getChildren().clear();
             this.model.chartRace(group, path, barColor, strokeColor);
-            //this.board.biggest(group, path, barColor, strokeColor);
         });
 
         biggestInX.setOnAction(event -> {
@@ -154,32 +148,9 @@ public class CreateMenu {
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(year -> this.year = year);
-            this.board.biggestInSpecificYear(group, path, year, barColor, strokeColor);
+            this.model.biggestInSpecificYear(group, path, year, barColor, strokeColor);
         });
 
-        smallestInX.setOnAction(event -> {
-            group.getChildren().clear();
-
-            String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
-            List<String> choices = new ArrayList<>();
-
-            for (String[] strings : inputFile) {
-                if (strings.length > 2) {
-                    if (!choices.contains(strings[0])) {
-                        choices.add(strings[0]);
-                    }
-                }
-            }
-
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha um tempo", choices);
-            dialog.setTitle("Tempo Desejado");
-            dialog.setHeaderText("Tempo Desejado");
-            dialog.setContentText("Data / Tempo:");
-
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(year -> this.year = year);
-            this.board.smallestInSpecificYear(group, path, year, barColor, strokeColor);
-        });
 
         specificCity.setOnAction(event -> {
             group.getChildren().clear();
@@ -202,7 +173,7 @@ public class CreateMenu {
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(city -> this.city = city);
-            this.board.specificCity(group, path, city, barColor, strokeColor);
+            this.model.specificCity(group, path, city, barColor, strokeColor);
         });
 
         return menuBar;

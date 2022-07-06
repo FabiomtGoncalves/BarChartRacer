@@ -21,6 +21,7 @@ public class BarChartRacerStart extends Application{
     private final BorderPane borderPane = new BorderPane();
     private final CreateMenu createMenu = new CreateMenu();
     private final Group group = new Group();
+    private final Group group2 = new Group();
     private final int sceneW = 800;
     private final int sceneH = 600;
 
@@ -35,7 +36,6 @@ public class BarChartRacerStart extends Application{
      */
     @Override
     public void start(Stage primaryStage) {
-        Model model = new Model();
         this.stage = primaryStage;
 
         try {
@@ -52,6 +52,7 @@ public class BarChartRacerStart extends Application{
         }
 
         borderPane.setTop(createMenu.create(group, path, this.stage));
+        borderPane.setCenter(group2);
         borderPane.setLeft(group);
         Scene scene = new Scene(borderPane, sceneW, sceneH);
         this.stage.setScene(scene);

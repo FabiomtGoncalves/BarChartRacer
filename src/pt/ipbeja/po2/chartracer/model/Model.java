@@ -7,6 +7,7 @@ package pt.ipbeja.po2.chartracer.model;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.stage.Stage;
 import pt.ipbeja.po2.chartracer.gui.*;
 
 import javafx.application.Platform;
@@ -18,7 +19,7 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 
-public class Model implements Comparable<Integer>{
+public class Model{
 
 
     private View view;
@@ -29,9 +30,10 @@ public class Model implements Comparable<Integer>{
     private final int reset = 50;
     private final int numOfObjs = 12;
     private final ReadFile readFile = new ReadFile();
-    public int pop = 0;
-    private Label dateYear;
 
+    public void setView(View view) {
+        this.view = view;
+    }
 
     /**
      * @param group
@@ -41,8 +43,7 @@ public class Model implements Comparable<Integer>{
      */
     public void chartRace(Group group, String path, Color barColor, Color strokeColor){
         positionY = reset;
-        Names title = new Names("The biggest", 0, 30.0);
-        group.getChildren().add(title);
+        view.drawTitle(group, "The biggest");
         String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
         String[][] data = new String[numOfObjs][2];//TODO
 
@@ -50,16 +51,11 @@ public class Model implements Comparable<Integer>{
         List<Names> textArray = new ArrayList<>();
 
 
-        this.dateYear = new Label("0");
-        group.getChildren().addAll(dateYear);
-
         for (int i = 0; i < numOfObjs; i++) {
             Bar bar = new Bar(positionY, 0, barColor, strokeColor);
             names = new Names(data[i][0], positionY + 30, 20.0);
             textArray.add(i, names);
             rectArray.add(i, bar);
-            view.drawRect(group,names);
-            //group.getChildren().addAll(names);
             positionY += 70;
 
             data[i][0] = "";
@@ -82,15 +78,7 @@ public class Model implements Comparable<Integer>{
                 int smallestPos = 0;
                 int duplicate = 0;
 
-                Arrays.sort(data, new Comparator<String[]>() {
-                    @Override
-                    public int compare(String[] array1, String[] array2) {
-                        Integer i1 = Integer.parseInt(array1[1]);
-                        Integer i2 = Integer.parseInt(array2[1]);
-
-                        return i2.compareTo(i1);
-                    }
-                });
+                array2DSort(data);
                 System.out.println(Arrays.deepToString(data));
 
                 for (int i = 0; i < data.length; i++) {
@@ -126,8 +114,7 @@ public class Model implements Comparable<Integer>{
                     data[smallestPos][0] = city.getCityName();
                     data[smallestPos][1]  = String.valueOf(city.getPopulation());
 
-                    view.draw(city.getPopulation(), group, position, city.getCityName(), strokeColor);
-                    //model.sleep(city.getPopulation(), group, position, city.getCityName(), date, dateYear, strokeColor);
+                    view.draw(city.getPopulation(), group, position, city.getCityName(), strokeColor, textArray.get(smallestPos));
                 }
             }
         }
@@ -136,83 +123,153 @@ public class Model implements Comparable<Integer>{
 
 
     /**
-     * @param population
      * @param group
-     * @param position
-     * @param name
-     * read all lines to one array of arrays of Strings
-     * Source: Projeto de IP 2020-2021
+     * @param path Path of the chosen dataset
+     * @param barColor Color of the fill for Bar
+     * @param strokeColor Color of the stroke for Bar
+     * The user is prompt with a dropdown with all the options from the dataset and then the program will draw the bars
+     * for the information that was chosen.
      */
-    public void sleep(int population, Group group, Double position, String name, String date, Label dateYear, Color strokeColor){
+    public void biggestInSpecificYear(Group group, String path, String year, Color barColor, Color strokeColor) {
+        positionY = 70;
 
-       Service<Void> service = new Service<Void>() {
-            @Override
-            protected Task<Void> createTask() {
-                return new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-                        final CountDownLatch latch = new CountDownLatch(1);
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                try{
-                                    Bar barNew = new Bar(position, population,barColor, strokeColor);
-                                    view.write("asd");
-                                    //Text text = new Text();
-                                    //text.setText(name);
-                                    //text.setX(barNew.getWidth());
-                                    //System.out.println(text.getText());
-                                    dateYear.setText(date + "");
-                                    group.getChildren().addAll(barNew);
-                                }finally{
-                                    latch.countDown();
-                                }
-                            }
-                        });
-                        latch.await();
-                        return null;
-                    }
-                };
+        view.drawTitle(group, "The most populous cities in the world in " + year);
+
+        String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
+        String[][] data = new String[12][2];//TODO
+        int count = 0;
+
+
+        for (int i = 0; i < inputFile.length; i++) {
+            if(inputFile[i][0].equals(year)) {
+                data[count][0] = inputFile[i][1];
+                data[count][1] = inputFile[i][3];
+
+                count++;
             }
-        };
-        service.start();
+        }
 
-        /*Thread t = new Thread( () ->  {
-                Platform.runLater( () ->
-                        {
-                            Bar barNew = new Bar(position, population,barColor, strokeColor);
-                            //Text text = new Text();
-                            //text.setText(name);
-                            //text.setX(barNew.getWidth());
-                            //System.out.println(text.getText());
-                            dateYear.setText(date + "");
-                            group.getChildren().addAll(barNew);
-                        }
-                );
+        array2DSort(data);
 
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-        });
-        t.start();*/
-
-    }
-
-
-
-    @Override
-    public int compareTo(Integer pop) {
-        if (this.pop > pop) {
-            return 1;
-        } else {
-            return 0;
+        for (int i = 0; i < data.length; i++) {
+            view.drawBiggestInSpecificYear(group, positionY, data[i][1], data[i][0], barColor, strokeColor);
+            positionY += 70;
         }
     }
 
-    public void setView(View view) {
-        this.view = view;
+
+    /**
+     * @param group
+     * @param path Path of the chosen dataset
+     * @param barColor Color of the fill for Bar
+     * @param strokeColor Color of the stroke for Bar
+     * The user is prompt with a dropdown with all the options from the dataset and then the program will draw the bars
+     * for the information that was chosen.
+     */
+    public void specificCity(Group group, String path, String city, Color barColor, Color strokeColor) {
+        positionY = 70;
+        view.drawTitle(group, "Population of " + city + " through the years");
+
+        String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
+
+        for (String[] strings : inputFile) {
+            if (strings.length > 2) {
+                if (strings[1].equals(city)) {
+
+                    view.drawSpecificCityBar(group, positionY, strings[3], barColor, strokeColor);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * @param path Path of the chosen dataset
+     * @param stage
+     * Generates a information file for the chosen dataset
+     */
+    public void generateFile(String path, Stage stage){
+
+        String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
+
+        int numDataSets = 0;
+        String firstDate = "";
+        String lastDate = "";
+        int numCols = 0;
+        int max = 0;
+        int numLines = 0;
+        int min = Integer.parseInt(inputFile[6][3]);
+
+        for (String[] strings : inputFile) {
+
+            if (strings.length > 2) {
+
+                if (firstDate.isEmpty()) {
+                    firstDate = strings[0];
+                }
+
+                if (max < Integer.parseInt(strings[3])) {
+                    max = Integer.parseInt(strings[3]);
+                }
+
+                if (min > Integer.parseInt(strings[3])) {
+                    min = Integer.parseInt(strings[3]);
+                }
+
+                numLines++;
+                lastDate = strings[0];
+                numCols = strings.length + 1;
+
+            } else {
+                try {
+                    Integer.parseInt(strings[0]);
+                    //System.out.println(cities[line][0]);
+                    numDataSets++;
+                } catch (NumberFormatException ignored) {
+
+                }
+            }
+        }
+
+        String[] datasetData = {"Number of data sets in file: " + numDataSets, "First date: " + firstDate, "Last date: " + lastDate,
+                "Average number of lines in each data set: " + (numLines / numDataSets), "Number of columns in each data set: " + numCols,
+                "Maximum value considering all data sets: " + max, "Minimum value considering all data sets: " + min};
+
+        try {
+
+            view.generateFile(stage, datasetData);
+
+        } catch (Exception e) {
+            System.out.println("Opção de guardar ficheiro cancelada.");
+        }
+
+
+        System.out.println("\nNumber of data sets in file: " + numDataSets);
+        System.out.println("First date: " + firstDate);
+        System.out.println("Last date: " + lastDate);
+        System.out.println("Average number of lines in each data set: " + (numLines / numDataSets));
+        System.out.println("Number of columns in each data set: " + numCols);
+        System.out.println("Maximum value considering all data sets: " + max);
+        System.out.println("Minimum value considering all data sets: " + min);
+    }
+
+    /**
+     * @param data
+     * read all lines to one array of arrays of Strings
+     * Source: Projeto de IP 2020-2021
+     */
+
+
+    private void array2DSort(String[][] data){
+        Arrays.sort(data, new Comparator<String[]>() {
+            @Override
+            public int compare(String[] array1, String[] array2) {
+                Integer i1 = Integer.parseInt(array1[1]);
+                Integer i2 = Integer.parseInt(array2[1]);
+
+                return i2.compareTo(i1);
+            }
+        });
     }
 
 
