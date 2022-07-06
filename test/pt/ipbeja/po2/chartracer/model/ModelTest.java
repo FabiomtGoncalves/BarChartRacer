@@ -6,11 +6,8 @@
 package pt.ipbeja.po2.chartracer.model;
 
 import org.junit.jupiter.api.Test;
+import pt.ipbeja.po2.chartracer.gui.City;
 
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,6 +30,10 @@ class ModelTest {
         assertEquals(file[4797][2], "United Kingdom");
         assertEquals(file[4797][3], "1990");
         assertEquals(file[4797][4], "Europe");
+    }
+
+    @Test
+    void teste2() {
     }
 
 //    @Test

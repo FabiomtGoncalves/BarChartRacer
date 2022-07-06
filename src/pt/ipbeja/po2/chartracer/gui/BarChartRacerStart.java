@@ -11,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import pt.ipbeja.po2.chartracer.model.Model;
 import java.io.File;
 
 public class BarChartRacerStart extends Application{
@@ -58,7 +57,5 @@ public class BarChartRacerStart extends Application{
         this.stage.setScene(scene);
         this.stage.setMaximized(true);
         this.stage.show();
-
     }
-
 }

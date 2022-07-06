@@ -5,19 +5,12 @@
 
 package pt.ipbeja.po2.chartracer.model;
 
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
-import javafx.stage.Stage;
 import pt.ipbeja.po2.chartracer.gui.*;
 
-import javafx.application.Platform;
+import javafx.stage.Stage;
 import javafx.scene.Group;
-import javafx.scene.control.*;
 import javafx.scene.paint.Color;
-
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
-
 
 public class Model{
 
@@ -72,7 +65,6 @@ public class Model{
                     cityList.add(data[i][0]);
                 }
 
-
                 double smallest = rectArray.get(0).getWidth();
 
                 int smallestPos = 0;
@@ -121,7 +113,6 @@ public class Model{
         System.out.println("Cities: " + Arrays.deepToString(data));
     }
 
-
     /**
      * @param group
      * @param path Path of the chosen dataset
@@ -156,7 +147,6 @@ public class Model{
             positionY += 70;
         }
     }
-
 
     /**
      * @param group
@@ -271,6 +261,4 @@ public class Model{
             }
         });
     }
-
-
 }

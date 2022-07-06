@@ -8,15 +8,11 @@ package pt.ipbeja.po2.chartracer.gui;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import pt.ipbeja.po2.chartracer.model.Model;
-import pt.ipbeja.po2.chartracer.model.ReadFile;
 import pt.ipbeja.po2.chartracer.model.View;
 import pt.ipbeja.po2.chartracer.model.WriteToFile;
 
@@ -28,7 +24,6 @@ import java.util.concurrent.CountDownLatch;
 public class Board implements View{
 
     private Integer positionY = 50;
-    private final ReadFile readFile = new ReadFile();
     private final WriteToFile writeToFile = new WriteToFile();
     private Model model;
     private Color barColor = Color.RED;
@@ -83,7 +78,6 @@ public class Board implements View{
         group.getChildren().addAll(bar, names, pop);
     }
 
-
     @Override
     public void generateFile(Stage stage, String[] datasetData) {
         FileChooser chooser = new FileChooser();
@@ -100,6 +94,4 @@ public class Board implements View{
         Bar bar = new Bar(positionY, Double.parseDouble(barWidth) / 50, barColor, strokeColor);
         group.getChildren().addAll(bar);
     }
-
-
 }
