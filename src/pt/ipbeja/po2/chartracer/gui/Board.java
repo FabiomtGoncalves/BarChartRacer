@@ -33,6 +33,16 @@ public class Board implements View{
         model.setView(this);
     }
 
+    /**
+     * @param population Number of population
+     * @param group
+     * @param position Position where the bar will be drawn
+     * @param cityName Name
+     * @param barColor Color of the bar
+     * @param strokeColor Color of the bar stroke
+     * @param date Date
+     * Draws and animates the bars, name and date
+     */
     @Override
     public void draw(int population, Group group, double position, String cityName, Color barColor, Color strokeColor, String date) {
         Service<Void> service = new Service<Void>() {
@@ -55,7 +65,6 @@ public class Board implements View{
                                     Names currentDate = new Names(date, dateY, 100.0);
                                     currentDate.setX(dateX);
                                     group.getChildren().addAll(barNew, city, size, remove, currentDate);
-
                                 } finally{
                                     latch.countDown();
                                 }
@@ -70,13 +79,26 @@ public class Board implements View{
         service.start();
     }
 
-
+    /**
+     * @param group Number of population
+     * @param title Title of the chart
+     * Draws the chart title
+     */
     @Override
     public void drawTitle(Group group, String title) {
         Names titleName = new Names(title, 0, 30.0);
         group.getChildren().add(titleName);
     }
 
+    /**
+     * @param group Number of population
+     * @param position Position where the bar will be drawn
+     * @param population Number of population
+     * @param name Name
+     * @param barColor Color of the Bar
+     * @param strokeColor Color of the Bar Stroke
+     * Draws the chart title
+     */
     @Override
     public void drawBiggestInSpecificYear(Group group, int position, int population, String name, Color barColor, Color strokeColor) {
         Bar bar = new Bar(position, population / 50.0, barColor, strokeColor);
@@ -85,18 +107,14 @@ public class Board implements View{
         group.getChildren().addAll(bar, names, size);
     }
 
-
-    @Override
-    public void generateFile(Stage stage, String[] datasetData) {
-        FileChooser chooser = new FileChooser();
-        chooser.setInitialDirectory(new File("..\\17646_FabioGoncalves_20481_JoaoPortelinha_TP_PO2_2021-2022\\src\\pt\\ipbeja\\po2\\chartracer\\datasets"));
-        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
-        chooser.setInitialFileName("data_stats" + ".txt");
-        File file = chooser.showSaveDialog(stage);
-        Path path2 = file.toPath();
-        writeToFile.write(path2, List.of(datasetData));
-    }
-
+    /**
+     * @param group Number of population
+     * @param position Position where the bar will be drawn
+     * @param population Number of population
+     * @param barColor Color of the Bar
+     * @param strokeColor Color of the Bar Stroke
+     * Draws the chart title
+     */
     @Override
     public void drawSpecificCityBar(Group group, int position, int population, Color barColor, Color strokeColor) {
         Bar remove = new Bar(position, 1500, Color.WHITESMOKE, Color.WHITESMOKE);
@@ -106,6 +124,24 @@ public class Board implements View{
         cityName.setX((population / 50.0) + 10);
         group.getChildren().addAll(remove, cityName, bar);
     }
+
+    /**
+     * @param stage Number of population
+     * @param datasetData Title of the chart
+     * Draws the chart title
+     */
+    @Override
+    public void generateFile(Stage stage, String[] datasetData) {
+        FileChooser chooser = new FileChooser();
+        chooser.setInitialDirectory(new File("..\\17646_FabioGoncalves_20481_JoaoPortelinha_TP_PO2_2021-2022\\src\\pt\\ipbeja\\po2\\chartracer\\results"));
+        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        chooser.setInitialFileName("data_stats" + ".txt");
+        File file = chooser.showSaveDialog(stage);
+        Path path2 = file.toPath();
+        writeToFile.write(path2, List.of(datasetData));
+    }
+
+
 
 
 }

@@ -31,7 +31,6 @@ public class ReadFile {
             return allData;
         } catch (IOException e) {
             String errorMessage = "Error reading file " + filename;
-            //showError(errorMessage);
             System.out.println(errorMessage + " - Exception " + e.toString())  ;
             return new String[0][];
         }

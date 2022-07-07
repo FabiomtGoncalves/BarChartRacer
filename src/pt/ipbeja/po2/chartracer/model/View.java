@@ -8,7 +8,6 @@ package pt.ipbeja.po2.chartracer.model;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import pt.ipbeja.po2.chartracer.gui.Names;
 
 public interface View {
 
@@ -21,5 +20,4 @@ public interface View {
     void generateFile(Stage stage, String[] datasetData);
 
     void drawSpecificCityBar(Group group, int position, int population, Color barcolor, Color strokeColor);
-
 }

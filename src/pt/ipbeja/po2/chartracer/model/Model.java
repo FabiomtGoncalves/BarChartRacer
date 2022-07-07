@@ -31,6 +31,7 @@ public class Model{
      * @param path Path of the chosen dataset
      * @param barColor Color of the fill for Bar
      * @param strokeColor Color of the stroke for Bar
+     * The main activity, where the bars race eachother throught the years and information they have
      */
     public void chartRace(Group group, String path, Color[] barColor, Color strokeColor){
         positionY = reset;
@@ -82,7 +83,6 @@ public class Model{
                     }
                 }
 
-
                 City city2 = new City(cityData.get(smallestPos).getCityName(), cityData.get(smallestPos).getPopulation());
                 int result = city.compareTo(city2);
 
@@ -98,7 +98,6 @@ public class Model{
                 }
             }
         }
-
 
         for (int i = 0; i < cityData.size(); i++) {
             view.draw(cityData.get(i).getPopulation(), group, rectArray.get(i).getY(),
@@ -175,7 +174,7 @@ public class Model{
     /**
      * @param path Path of the chosen dataset
      * @param stage
-     * Generates a information file for the chosen dataset
+     * Generates an information file for the chosen dataset
      */
     public void generateFile(String path, Stage stage){
 
@@ -239,11 +238,8 @@ public class Model{
 
     /**
      * @param path
-     * read all lines to one array of arrays of Strings
-     * Source: Projeto de IP 2020-2021
+     * Checks what file is chosen
      */
-
-
     private int checkFile(String path){
         int divisor = 0;
         if (path.contains("cities.txt")) {

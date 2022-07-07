@@ -28,7 +28,6 @@ public class BarChartRacerStart extends Application{
     public static void main(String[] args) {
         launch(args);
     }
-
     /**
      * @param primaryStage
      * Prompt's the user for a choice of the file form the dataset folder, draws and starts the borderPane
