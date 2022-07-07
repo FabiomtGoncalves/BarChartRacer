@@ -56,7 +56,7 @@ public class Model{
                 Collections.sort(cityData);
                 Collections.reverse(cityData);
 
-                System.out.println("last pos" + cityData.get(cityData.size()-1).getPopulation());
+                //System.out.println("last pos" + cityData.get(cityData.size()-1).getPopulation());
 
                 String[][] data = new String[numOfObjs][2];
 
@@ -94,19 +94,17 @@ public class Model{
                     cityData.get(smallestPos).setPopulation(city.getPopulation());
 
                     view.draw(city.getPopulation(), group, position, city.getCityName(),
-                            barColor[smallestPos], strokeColor, date);
+                            barColor[smallestPos], strokeColor, date, checkFile(path));
                 }
             }
         }
 
 
         for (int i = 0; i < cityData.size(); i++) {
-            view.draw(cityData.get(i).getPopulation(), group, rectArray.get(i).getY(),
-                    cityData.get(i).getCityName(), barColor[i], strokeColor, date);
+            view.drawFinal(cityData.get(i).getPopulation(), group, rectArray.get(i).getY(),
+                    cityData.get(i).getCityName(), barColor[i], strokeColor, date, i, checkFile(path));
         }
-
     }
-
 
     /**
      * @param group
@@ -142,7 +140,7 @@ public class Model{
 
         for (int i = 0; i < numOfObjs; i++) {
             view.drawBiggestInSpecificYear(group, positionY, cityData.get(i).getPopulation(),
-                    cityData.get(i).getCityName(), barColor[i], strokeColor);
+                    cityData.get(i).getCityName(), barColor[i], strokeColor, checkFile(path));
             positionY += 70;
         }
     }
@@ -165,7 +163,8 @@ public class Model{
         for (String[] strings : inputFile) {
             if (strings.length > 2) {
                 if (strings[1].equals(city)) {
-                    view.drawSpecificCityBar(group, positionY, Integer.parseInt(strings[3]), barColor[1], strokeColor);
+                    view.drawSpecificCityBar(group, positionY, Integer.parseInt(strings[3]),
+                            barColor[1], strokeColor, checkFile(path));
                 }
             }
         }
@@ -244,24 +243,24 @@ public class Model{
      */
 
 
-    private int checkFile(String path){
-        int divisor = 0;
+    private double checkFile(String path){
+        double divisor = 0;
         if (path.contains("cities.txt")) {
-            divisor = 100;
+            divisor = 25.0;
         }
         else if (path.contains("countries.txt")){
-            divisor = 1000;
+            divisor = 1000.0;
         }
         else if (path.contains("cities-usa.txt")){
-            System.out.println("cities usa");
+            divisor = 500.0;
         }
         else if (path.contains("movies.txt")){
-            System.out.println("movies");
+            divisor = 1000000.0;
         } else if (path.contains("baby-names.txt")){
-            System.out.println("baby-names");
+            divisor = 100.0;
         }
         else if (path.contains("brands.txt")){
-            System.out.println("brands");
+            divisor = 300.0;
         }
         return divisor;
     }
