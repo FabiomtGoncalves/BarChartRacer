@@ -12,7 +12,11 @@ import java.util.List;
 
 public class WriteToFile {
 
-
+    /**
+     * @param path Path where we want to save the file
+     * @param datasetData The data that will be written
+     * Write to a file
+     */
     public void write(Path path, List<String> datasetData) {
         try {
             Files.write(path, datasetData);

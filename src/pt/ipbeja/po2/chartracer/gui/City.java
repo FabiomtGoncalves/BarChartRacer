@@ -25,6 +25,18 @@ public class City implements Comparable<City>{
         this.population = population;
     }
 
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public void setContinent(String continent) {
+        this.continent = continent;
+    }
+
     public String getCityName() {
         return cityName;
     }
@@ -45,17 +57,7 @@ public class City implements Comparable<City>{
         return continent;
     }
 
-    public void setYear(String year) {
-        this.year = year;
-    }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public void setContinent(String continent) {
-        this.continent = continent;
-    }
 
     @Override
     public int compareTo(City otherCity) {

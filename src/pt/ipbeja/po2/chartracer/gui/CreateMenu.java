@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 import pt.ipbeja.po2.chartracer.model.Model;
 import pt.ipbeja.po2.chartracer.model.ReadFile;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,17 +26,22 @@ public class CreateMenu {
 
     private Color[] colors;
 
-    private Color[] palletDefault = {Color.INDIANRED, Color.SKYBLUE, Color.SPRINGGREEN, Color.MEDIUMVIOLETRED,
+    private final Color[] palletDefault = {Color.INDIANRED, Color.SKYBLUE, Color.SPRINGGREEN, Color.MEDIUMVIOLETRED,
             Color.YELLOW, Color.SILVER, Color.SANDYBROWN, Color.AQUAMARINE, Color.CHARTREUSE, Color.CORNFLOWERBLUE,
             Color.CYAN, Color.DARKGREEN};
 
-    private Color[] pallet1 = {Color.DARKORANGE, Color.DARKORCHID, Color.GOLD, Color.INDIGO, Color.MEDIUMBLUE,
+    private final Color[] pallet1 = {Color.DARKORANGE, Color.DARKORCHID, Color.GOLD, Color.INDIGO, Color.MEDIUMBLUE,
             Color.MEDIUMPURPLE, Color.MEDIUMSPRINGGREEN, Color.MISTYROSE, Color.ORANGERED, Color.PALEGREEN, Color.PLUM, Color.SKYBLUE};
 
-    private Color[] pallet2 = {Color.YELLOWGREEN, Color.TOMATO, Color.THISTLE, Color.TEAL, Color.STEELBLUE, Color.SLATEGREY,
+    private final Color[] pallet2 = {Color.YELLOWGREEN, Color.TOMATO, Color.THISTLE, Color.TEAL, Color.STEELBLUE, Color.SLATEGREY,
             Color.SEASHELL, Color.PALETURQUOISE, Color.OLIVEDRAB, Color.PALEGOLDENROD, Color.SIENNA, Color.MOCCASIN};
 
-
+    /**
+     * @param group
+     * @param path
+     * @param stage
+     * Creates the menu with all the options
+     */
     public MenuBar create(Group group, String path, Stage stage) {
         colors = palletDefault;
         MenuBar menuBar = new MenuBar();
@@ -167,7 +171,6 @@ public class CreateMenu {
             this.model.biggestInSpecificYear(group, path, year, colors, strokeColor);
         });
 
-
         specificCity.setOnAction(event -> {
             group.getChildren().clear();
 
@@ -191,8 +194,6 @@ public class CreateMenu {
             result.ifPresent(city -> this.city = city);
             this.model.specificCity(group, path, city, colors, strokeColor);
         });
-
         return menuBar;
     }
-
 }
