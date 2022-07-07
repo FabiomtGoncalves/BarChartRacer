@@ -56,27 +56,19 @@ public class Board implements View{
                                     currentDate.setX(dateX);
                                     group.getChildren().addAll(barNew, city, size, remove, currentDate);
 
-                                    try{
-                                        latch.wait(1000);
-                                        group.getChildren().remove(barNew);
-                                    }catch (Exception e){
-
-                                    }
-
-                                }finally{
+                                } finally{
                                     latch.countDown();
                                 }
                             }
                         });
-                        latch.await();
-                        return null;
+                            latch.await();
+                            return null;
                     }
                 };
             }
         };
         service.start();
     }
-
 
 
     @Override

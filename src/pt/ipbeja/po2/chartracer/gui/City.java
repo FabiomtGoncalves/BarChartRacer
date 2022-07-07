@@ -1,3 +1,8 @@
+/**
+ * Fábio Gonçalves nº17646
+ * João Portelinha nº20481
+ **/
+
 package pt.ipbeja.po2.chartracer.gui;
 
 public class City implements Comparable<City>{
@@ -8,11 +13,8 @@ public class City implements Comparable<City>{
     private String continent;
 
     public City(String cityName, int population) {
-        //this.year = year;
         this.cityName = cityName;
-        //this.country = country;
         this.population = population;
-        //this.continent = continent;
     }
 
     public void setCityName(String cityName) {

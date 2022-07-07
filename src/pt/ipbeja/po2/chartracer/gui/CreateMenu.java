@@ -1,3 +1,8 @@
+/**
+ * Fábio Gonçalves nº17646
+ * João Portelinha nº20481
+ **/
+
 package pt.ipbeja.po2.chartracer.gui;
 
 import javafx.scene.Group;
@@ -7,6 +12,7 @@ import javafx.stage.Stage;
 import pt.ipbeja.po2.chartracer.model.Model;
 import pt.ipbeja.po2.chartracer.model.ReadFile;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,13 +21,25 @@ public class CreateMenu {
     private final Model model = new Model();
     private final Board board = new Board(model);
     private final ReadFile readFile = new ReadFile();
-    private Color barColor = Color.RED;
     private String year;
     private String city;
     private Color strokeColor;
 
-    public MenuBar create(Group group, String path, Stage stage) {
+    private Color[] colors;
 
+    private Color[] palletDefault = {Color.INDIANRED, Color.SKYBLUE, Color.SPRINGGREEN, Color.MEDIUMVIOLETRED,
+            Color.YELLOW, Color.SILVER, Color.SANDYBROWN, Color.AQUAMARINE, Color.CHARTREUSE, Color.CORNFLOWERBLUE,
+            Color.CYAN, Color.DARKGREEN};
+
+    private Color[] pallet1 = {Color.DARKORANGE, Color.DARKORCHID, Color.GOLD, Color.INDIGO, Color.MEDIUMBLUE,
+            Color.MEDIUMPURPLE, Color.MEDIUMSPRINGGREEN, Color.MISTYROSE, Color.ORANGERED, Color.PALEGREEN, Color.PLUM, Color.SKYBLUE};
+
+    private Color[] pallet2 = {Color.YELLOWGREEN, Color.TOMATO, Color.THISTLE, Color.TEAL, Color.STEELBLUE, Color.SLATEGREY,
+            Color.SEASHELL, Color.PALETURQUOISE, Color.OLIVEDRAB, Color.PALEGOLDENROD, Color.SIENNA, Color.MOCCASIN};
+
+
+    public MenuBar create(Group group, String path, Stage stage) {
+        colors = palletDefault;
         MenuBar menuBar = new MenuBar();
         Menu menu = new Menu("Bar Chart Racer");
 
@@ -67,7 +85,7 @@ public class CreateMenu {
 
         defaultSkin.setOnAction(actionEvent -> {
             strokeColor = Color.TRANSPARENT;
-            barColor = Color.RED;
+            colors = palletDefault;
         });
 
         stroke.setOnAction(actionEvent -> {
@@ -76,7 +94,7 @@ public class CreateMenu {
             choices.add("Azul");
             choices.add("Verde");
 
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha uma cor", choices);
+            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha uma Cor", choices);
             dialog.setTitle("Skin");
             dialog.setHeaderText("Cor da Stroke");
             dialog.setContentText("Cor:");
@@ -93,21 +111,19 @@ public class CreateMenu {
 
         bar.setOnAction(actionEvent -> {
             List<String> choices = new ArrayList<>();
-            choices.add("Preto");
-            choices.add("Azul");
-            choices.add("Verde");
+            choices.add("Pallet 1");
+            choices.add("Pallet 2");
 
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha uma cor", choices);
+            ChoiceDialog<String> dialog = new ChoiceDialog<>("Escolha uma pallet", choices);
             dialog.setTitle("Skin");
-            dialog.setHeaderText("Cor da Stroke");
-            dialog.setContentText("Cor:");
+            dialog.setHeaderText("Cor da Pallet");
+            dialog.setContentText("Pallet:");
 
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()){
                 switch (result.get()) {
-                    case "Laranja" -> barColor = Color.ORANGE;
-                    case "Azul" -> barColor = Color.ROYALBLUE;
-                    case "Verde" -> barColor = Color.SPRINGGREEN;
+                    case "Pallet 1" -> colors = pallet1;
+                    case "Pallet 2" -> colors = pallet2;
                 }
             }
 
@@ -124,7 +140,7 @@ public class CreateMenu {
 
         biggest.setOnAction(event -> {
             group.getChildren().clear();
-            this.model.chartRace(group, path, barColor, strokeColor);
+            this.model.chartRace(group, path, colors, strokeColor);
         });
 
         biggestInX.setOnAction(event -> {
@@ -148,7 +164,7 @@ public class CreateMenu {
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(year -> this.year = year);
-            this.model.biggestInSpecificYear(group, path, year, barColor, strokeColor);
+            this.model.biggestInSpecificYear(group, path, year, colors, strokeColor);
         });
 
 
@@ -173,7 +189,7 @@ public class CreateMenu {
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(city -> this.city = city);
-            this.model.specificCity(group, path, city, barColor, strokeColor);
+            this.model.specificCity(group, path, city, colors, strokeColor);
         });
 
         return menuBar;

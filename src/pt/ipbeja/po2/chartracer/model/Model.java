@@ -13,9 +13,7 @@ import java.util.*;
 
 public class Model{
 
-
     private View view;
-    private Color barColor = Color.RED;
     private int count = 0;
     private Names names;
     private Integer positionY = 50;
@@ -34,7 +32,7 @@ public class Model{
      * @param barColor Color of the fill for Bar
      * @param strokeColor Color of the stroke for Bar
      */
-    public void chartRace(Group group, String path, Color barColor, Color strokeColor){
+    public void chartRace(Group group, String path, Color[] barColor, Color strokeColor){
         positionY = reset;
         view.drawTitle(group, "The biggest");
         String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
@@ -43,7 +41,7 @@ public class Model{
         List<Bar> rectArray = new ArrayList<>();
 
         for (int i = 0; i < numOfObjs; i++) {
-            Bar bar = new Bar(positionY, 0, barColor, strokeColor);
+            Bar bar = new Bar(positionY, 0, barColor[i], strokeColor);
             names = new Names("", positionY + 30, 20.0);
             rectArray.add(i, bar);
             positionY += 70;
@@ -58,6 +56,8 @@ public class Model{
                 Collections.sort(cityData);
                 Collections.reverse(cityData);
 
+                System.out.println("last pos" + cityData.get(cityData.size()-1).getPopulation());
+
                 String[][] data = new String[numOfObjs][2];
 
                 for (int i = 0; i < cityData.size(); i++) {
@@ -67,31 +67,21 @@ public class Model{
 
                 System.out.println("Cities: " + Arrays.deepToString(data));
 
-                double smallest = cityData.get(0).getPopulation();
-
                 int smallestPos = 0;
-                int duplicate = 0;
-
 
                 for (int i = 0; i < cityData.size(); i++) {
                     if (cityData.get(i).getCityName().equals("")){
+                        smallestPos = cityData.size()-1;
                         break;
                     }
-                    if (cityData.get(i).getCityName().equals(city.getCityName())){
-                        duplicate = i;
+                    if (cityData.get(i).getCityName().contains(city.getCityName())){
+                        smallestPos = i;
+                        break;
+                    } else{
+                        smallestPos = cityData.size()-1;
                     }
                 }
 
-                for (int j = 0; j < numOfObjs; j++) {
-                    if (smallest > cityData.get(j).getPopulation() && !cityData.get(j).getCityName().contains(city.getCityName())) {
-                        smallest = cityData.get(j).getPopulation();
-                        smallestPos = j;
-                    }
-                    else if(cityData.get(j).getCityName().contains(city.getCityName())){
-                        smallestPos = duplicate;
-                        break;
-                    }
-                }
 
                 City city2 = new City(cityData.get(smallestPos).getCityName(), cityData.get(smallestPos).getPopulation());
                 int result = city.compareTo(city2);
@@ -104,15 +94,15 @@ public class Model{
                     cityData.get(smallestPos).setPopulation(city.getPopulation());
 
                     view.draw(city.getPopulation(), group, position, city.getCityName(),
-                            barColor, strokeColor, date);
+                            barColor[smallestPos], strokeColor, date);
                 }
             }
         }
 
+
         for (int i = 0; i < cityData.size(); i++) {
             view.draw(cityData.get(i).getPopulation(), group, rectArray.get(i).getY(),
-                    cityData.get(i).getCityName(), Color.PINK, strokeColor, date);
-
+                    cityData.get(i).getCityName(), barColor[i], strokeColor, date);
         }
 
     }
@@ -126,7 +116,7 @@ public class Model{
      * The user is prompt with a dropdown with all the options from the dataset and then the program will draw the bars
      * for the information that was chosen.
      */
-    public void biggestInSpecificYear(Group group, String path, String year, Color barColor, Color strokeColor) {
+    public void biggestInSpecificYear(Group group, String path, String year, Color[] barColor, Color strokeColor) {
         checkFile(path);
         System.out.println(checkFile(path));
         positionY = reset;
@@ -152,7 +142,7 @@ public class Model{
 
         for (int i = 0; i < numOfObjs; i++) {
             view.drawBiggestInSpecificYear(group, positionY, cityData.get(i).getPopulation(),
-                    cityData.get(i).getCityName(), barColor, strokeColor);
+                    cityData.get(i).getCityName(), barColor[i], strokeColor);
             positionY += 70;
         }
     }
@@ -166,7 +156,7 @@ public class Model{
      * The user is prompt with a dropdown with all the options from the dataset and then the program will draw the bars
      * for the information that was chosen.
      */
-    public void specificCity(Group group, String path, String city, Color barColor, Color strokeColor) {
+    public void specificCity(Group group, String path, String city, Color[] barColor, Color strokeColor) {
         positionY = 70;
         view.drawTitle(group, "Population of " + city + " through the years");
 
@@ -175,7 +165,7 @@ public class Model{
         for (String[] strings : inputFile) {
             if (strings.length > 2) {
                 if (strings[1].equals(city)) {
-                    view.drawSpecificCityBar(group, positionY, Integer.parseInt(strings[3]), barColor, strokeColor);
+                    view.drawSpecificCityBar(group, positionY, Integer.parseInt(strings[3]), barColor[1], strokeColor);
                 }
             }
         }
@@ -237,7 +227,6 @@ public class Model{
         } catch (Exception e) {
             System.out.println("Opção de guardar ficheiro cancelada.");
         }
-
 
         System.out.println("\nNumber of data sets in file: " + numDataSets);
         System.out.println("First date: " + firstDate);

@@ -7,7 +7,6 @@ package pt.ipbeja.po2.chartracer.model;
 
 import org.junit.jupiter.api.Test;
 import pt.ipbeja.po2.chartracer.gui.City;
-
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
@@ -92,6 +91,10 @@ class ModelTest {
         City[] cityArray1500 = new City[12];
         City[] cityArray2018 = new City[12];
 
+        String[] citiesString = new String[10];
+
+        String teste3Path = "src/pt/ipbeja/po2/chartracer/results/test3.txt";
+
         for (String[] strings : file) {
             if (strings.length > 2) {
                 if (strings[0].equals("1500")) {
@@ -120,38 +123,29 @@ class ModelTest {
         Arrays.sort(cityArray1500, Collections.reverseOrder());
         Arrays.sort(cityArray2018, Collections.reverseOrder());
 
-
-
-        for (int i = 0; i < 4; i++) {
-            writeToFile.write(Paths.get("src/pt/ipbeja/po2/chartracer/results/test3.txt"), List.of(cityArray1500[i].getCityName() + "," + cityArray1500[i].getPopulation()));
+        for (int i = 0; i < 5; i++) {
+            citiesString[i] = cityArray1500[i].getYear() + "," + cityArray1500[i].getCityName() + "," + cityArray1500[i].getCountry() + "," +
+                    cityArray1500[i].getPopulation() + "," + cityArray1500[i].getContinent();
         }
+
+        for (int i = 5; i < 10; i++) {
+            citiesString[i] = cityArray2018[i].getYear() + "," + cityArray2018[i].getCityName() + "," + cityArray2018[i].getCountry() + "," +
+                    cityArray2018[i].getPopulation() + "," + cityArray2018[i].getContinent();
+        }
+
+        writeToFile.write(Paths.get(teste3Path), List.of(citiesString));
+
+        String[][] fileTest3 = readFile.readFileToStringArray2D(teste3Path, ",");
+
+        assertEquals(fileTest3[0][1], "Beijing");
+        assertEquals(fileTest3[1][1], "Vijayanagar");
+        assertEquals(fileTest3[2][1], "Cairo");
+        assertEquals(fileTest3[3][1], "Hangzhou");
+        assertEquals(fileTest3[4][1], "Tabriz");
+        assertEquals(fileTest3[5][1], "São Paulo");
+        assertEquals(fileTest3[6][1], "Mexico City");
+        assertEquals(fileTest3[7][1], "Osaka");
+        assertEquals(fileTest3[8][1], "Cairo");
+        assertEquals(fileTest3[9][1], "Dhaka");
     }
-//    @Test
-//    void teste3() throws IOException {
-//        teste2();
-//
-//        FileWriter writer = new FileWriter(new File("..\\17646_FabioGoncalves_20481_JoaoPortelinha_TP_PO2_2021-2022\\src\\pt\\ipbeja\\po2\\chartracer\\datasets\\teste3.txt"));
-//
-//        for (int i = 0; i < 10; i++) {
-//            if (i < 5) {
-//                writer.append(firstYear[i][0] + ",").append(firstYear[i][1] + ",").append(firstYear[i][2] + ",").append(firstYear[i][3] + ",").append(firstYear[i][4]).append("\n");
-//            } else {
-//                writer.append(lastYear[i][0] + ",").append(lastYear[i][1] + ",").append(lastYear[i][2] + ",").append(lastYear[i][3] + ",").append(lastYear[i][4]).append("\n");
-//            }
-//        }
-//        writer.close();
-//
-//        String[][] teste3 = model.readFileToStringArray2D("src/pt/ipbeja/po2/chartracer/datasets/teste3.txt", ",");
-//
-//        assertEquals(teste3[0][1], "Beijing");
-//        assertEquals(teste3[1][1], "Vijayanagar");
-//        assertEquals(teste3[2][1], "Cairo");
-//        assertEquals(teste3[3][1], "Tabriz");
-//        assertEquals(teste3[4][1], "Hangzhou");
-//        assertEquals(teste3[5][1], "São Paulo");
-//        assertEquals(teste3[6][1], "Mexico City");
-//        assertEquals(teste3[7][1], "Osaka");
-//        assertEquals(teste3[8][1], "Cairo");
-//        assertEquals(teste3[9][1], "Dhaka");
-//    }
 }
