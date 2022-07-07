@@ -22,7 +22,7 @@ public class Model{
     private final int reset = 50;
     private final int numOfObjs = 12;
     private final ReadFile readFile = new ReadFile();
-    private int divisor = 0;
+    private String date;
 
     public void setView(View view) {
         this.view = view;
@@ -38,81 +38,86 @@ public class Model{
         positionY = reset;
         view.drawTitle(group, "The biggest");
         String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
-        String[][] data = new String[numOfObjs][2];
 
+        List<City> cityData = new ArrayList<>();
         List<Bar> rectArray = new ArrayList<>();
-        List<Names> textArray = new ArrayList<>();
-
 
         for (int i = 0; i < numOfObjs; i++) {
             Bar bar = new Bar(positionY, 0, barColor, strokeColor);
-            names = new Names(data[i][0], positionY + 30, 20.0);
-            textArray.add(i, names);
+            names = new Names("", positionY + 30, 20.0);
             rectArray.add(i, bar);
             positionY += 70;
-
-            data[i][0] = "";
-            data[i][1] = "0";
+            cityData.add(i, new City("", 0));
         }
 
         for (String[] strings : inputFile) {
             if (strings.length > 2) {
                 City city = new City(strings[1], Integer.parseInt(strings[3]));
-                String date = strings[0];
+                date = strings[0];
 
-                List<String> cityList = new ArrayList<>();
-                for (int i = 0; i < data.length; i++) {
-                    cityList.add(data[i][0]);
+                Collections.sort(cityData);
+                Collections.reverse(cityData);
+
+                String[][] data = new String[numOfObjs][2];
+
+                for (int i = 0; i < cityData.size(); i++) {
+                    data[i][0] = cityData.get(i).getCityName();
+                    data[i][1] = String.valueOf(cityData.get(i).getPopulation());
                 }
 
+                System.out.println("Cities: " + Arrays.deepToString(data));
 
-                double smallest = rectArray.get(0).getWidth();
+                double smallest = cityData.get(0).getPopulation();
 
                 int smallestPos = 0;
                 int duplicate = 0;
 
-                array2DSort(data);
-                System.out.println(Arrays.deepToString(data));
 
-                for (int i = 0; i < data.length; i++) {
-                    if (data[i][0].equals("")){
+                for (int i = 0; i < cityData.size(); i++) {
+                    if (cityData.get(i).getCityName().equals("")){
                         break;
                     }
-                    if (data[i][0].equals(city.getCityName())){
+                    if (cityData.get(i).getCityName().equals(city.getCityName())){
                         duplicate = i;
                     }
                 }
 
                 for (int j = 0; j < numOfObjs; j++) {
-                    if (smallest > rectArray.get(j).getWidth() && !cityList.contains(city.getCityName())) {
-                        smallest = rectArray.get(j).getWidth();
+
+                    if (smallest > cityData.get(j).getPopulation() && !cityData.get(j).getCityName().contains(city.getCityName())) {
+                        smallest = cityData.get(j).getPopulation();
                         smallestPos = j;
                     }
-                    else if(cityList.contains(city.getCityName())){
+                    else if(cityData.get(j).getCityName().contains(city.getCityName())){
                         smallestPos = duplicate;
                         break;
                     }
                 }
-                City city2 = new City(data[smallestPos][0], Integer.parseInt(data[smallestPos][1]));
+
+                City city2 = new City(cityData.get(smallestPos).getCityName(), cityData.get(smallestPos).getPopulation());
                 int result = city.compareTo(city2);
 
                 if (result > 0) {
 
                     double position = rectArray.get(smallestPos).getY();
-
                     rectArray.get(smallestPos).setWidth(city.getPopulation());
-                    textArray.get(smallestPos).setText(city.getCityName());
-                    textArray.get(smallestPos).setX(rectArray.get(smallestPos).getWidth());
+                    cityData.get(smallestPos).setCityName(city.getCityName());
+                    cityData.get(smallestPos).setPopulation(city.getPopulation());
 
-                    data[smallestPos][0] = city.getCityName();
-                    data[smallestPos][1]  = String.valueOf(city.getPopulation());
-
-                    view.draw(city.getPopulation() / 25, group, position, city.getCityName(),
-                            barColor, strokeColor, textArray.get(smallestPos), date);
+                    view.draw(city.getPopulation(), group, position, city.getCityName(),
+                            barColor, strokeColor, date);
                 }
             }
         }
-        System.out.println("Cities: " + Arrays.deepToString(data));
+
+
+        for (int i = 0; i < cityData.size(); i++) {
+
+            view.draw(cityData.get(i).getPopulation(), group, rectArray.get(i).getY(),
+                    cityData.get(i).getCityName(), Color.PINK, strokeColor, date);
+
+        }
+
     }
 
 
@@ -133,43 +138,24 @@ public class Model{
 
         String[][] inputFile = readFile.readFileToStringArray2D(path, ",");
 
-        for (String[] strings : inputFile) {
+        List<City> cityData = new ArrayList<>();
 
-            if (strings.length == 1){
-                try {
-                    Integer.parseInt(strings[0]);
-                    datasetSize = Integer.parseInt(strings[0]);
-                } catch (NumberFormatException ignored) {
-                }
-
-            }
-
-            if (strings.length > 2) {
-
-                if(strings[0].equals(year)){
-                    break;
-                }
-
-            }
-        }
-
-        String[][] data = new String[datasetSize][2];
         int count = 0;
 
 
         for (int i = 0; i < inputFile.length; i++) {
             if(inputFile[i][0].equals(year)) {
-                data[count][0] = inputFile[i][1];
-                data[count][1] = inputFile[i][3];
-
+                cityData.add(count, new City(inputFile[i][1], Integer.parseInt(inputFile[i][3])));
                 count++;
             }
         }
 
-        array2DSort(data);
+        Collections.sort(cityData);
+        Collections.reverse(cityData);
 
-        for (int i = 0; i < data.length; i++) {
-            view.drawBiggestInSpecificYear(group, positionY, data[i][1], data[i][0], barColor, strokeColor);
+        for (int i = 0; i < numOfObjs; i++) {
+            view.drawBiggestInSpecificYear(group, positionY, cityData.get(i).getPopulation(),
+                    cityData.get(i).getCityName(), barColor, strokeColor);
             positionY += 70;
         }
     }
@@ -192,7 +178,7 @@ public class Model{
         for (String[] strings : inputFile) {
             if (strings.length > 2) {
                 if (strings[1].equals(city)) {
-                    view.drawSpecificCityBar(group, positionY, strings[3], barColor, strokeColor);
+                    view.drawSpecificCityBar(group, positionY, Integer.parseInt(strings[3]), barColor, strokeColor);
                 }
             }
         }
@@ -239,7 +225,6 @@ public class Model{
             } else {
                 try {
                     Integer.parseInt(strings[0]);
-                    //System.out.println(cities[line][0]);
                     numDataSets++;
                 } catch (NumberFormatException ignored) {
 
@@ -270,31 +255,30 @@ public class Model{
     }
 
     /**
-     * @param data
+     * @param path
      * read all lines to one array of arrays of Strings
      * Source: Projeto de IP 2020-2021
      */
 
 
-    private void array2DSort(String[][] data){
-        Arrays.sort(data, new Comparator<String[]>() {
-            @Override
-            public int compare(String[] array1, String[] array2) {
-                Integer i1 = Integer.parseInt(array1[1]);
-                Integer i2 = Integer.parseInt(array2[1]);
-
-                return i2.compareTo(i1);
-            }
-        });
-    }
-
     private int checkFile(String path){
-        String asd = "..\\17646_FabioGoncalves_20481_JoaoPortelinha_TP_PO2_2021-2022\\src\\pt\\ipbeja\\po2\\chartracer\\datasets";
-        switch (path){
-            case "..\\17646_FabioGoncalves_20481_JoaoPortelinha_TP_PO2_2021-2022\\src\\pt\\ipbeja\\po2\\chartracer\\datasets\\cities.txt":
-                divisor = 100;
-                System.out.println("entrou");
-                break;
+        int divisor = 0;
+        if (path.contains("cities.txt")) {
+            divisor = 100;
+        }
+        else if (path.contains("countries.txt")){
+            divisor = 1000;
+        }
+        else if (path.contains("cities-usa.txt")){
+            System.out.println("cities usa");
+        }
+        else if (path.contains("movies.txt")){
+            System.out.println("movies");
+        } else if (path.contains("baby-names.txt")){
+            System.out.println("baby-names");
+        }
+        else if (path.contains("brands.txt")){
+            System.out.println("brands");
         }
         return divisor;
     }

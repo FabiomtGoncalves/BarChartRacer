@@ -24,9 +24,9 @@ public class Board implements View{
 
     private final WriteToFile writeToFile = new WriteToFile();
     private final int dateY = 900;
-    private final int dateX = 1600;
+    private final int dateX = 1400;
     private final int removeY = 800;
-    private final int removeX = 100;
+    private final int removeX = 110;
 
 
     public Board(Model model) {
@@ -34,7 +34,7 @@ public class Board implements View{
     }
 
     @Override
-    public void draw(int population, Group group, double position, String cityName, Color barColor, Color strokeColor, Names textArrays, String date) {
+    public void draw(int population, Group group, double position, String cityName, Color barColor, Color strokeColor, String date) {
         Service<Void> service = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
@@ -46,15 +46,23 @@ public class Board implements View{
                             @Override
                             public void run() {
                                 try{
-                                    Bar barNew = new Bar(position, population, barColor, strokeColor);
+                                    Bar barNew = new Bar(position, population / 25.0, barColor, strokeColor);
                                     Names city = new Names(cityName, position + 25, 20.0);
-                                    Names size = new Names("" + population * 25, position + 40, 15.0);
-                                    Bar remove = new Bar(removeY, 250, Color.WHITESMOKE, Color.WHITESMOKE);
+                                    Names size = new Names("" + population, position + 40, 15.0);
+                                    Bar remove = new Bar(removeY, 600, Color.WHITESMOKE, Color.WHITESMOKE);
                                     remove.setHeight(removeX);
                                     remove.setX(dateX);
                                     Names currentDate = new Names(date, dateY, 100.0);
                                     currentDate.setX(dateX);
                                     group.getChildren().addAll(barNew, city, size, remove, currentDate);
+
+                                    try{
+                                        latch.wait(1000);
+                                        group.getChildren().remove(barNew);
+                                    }catch (Exception e){
+
+                                    }
+
                                 }finally{
                                     latch.countDown();
                                 }
@@ -69,6 +77,8 @@ public class Board implements View{
         service.start();
     }
 
+
+
     @Override
     public void drawTitle(Group group, String title) {
         Names titleName = new Names(title, 0, 30.0);
@@ -76,10 +86,10 @@ public class Board implements View{
     }
 
     @Override
-    public void drawBiggestInSpecificYear(Group group, int position, String population, String name, Color barColor, Color strokeColor) {
-        Bar bar = new Bar(position, Double.parseDouble(population) / 50, barColor, strokeColor);
+    public void drawBiggestInSpecificYear(Group group, int position, int population, String name, Color barColor, Color strokeColor) {
+        Bar bar = new Bar(position, population / 50.0, barColor, strokeColor);
         Names names = new Names(name, position + 25, 20.0);
-        Names size = new Names(population, position + 40, 15.0);
+        Names size = new Names("" + population, position + 40, 15.0);
         group.getChildren().addAll(bar, names, size);
     }
 
@@ -96,9 +106,13 @@ public class Board implements View{
     }
 
     @Override
-    public void drawSpecificCityBar(Group group, int position, String barWidth, Color barColor, Color strokeColor) {
-        Bar bar = new Bar(position, Double.parseDouble(barWidth) / 50, barColor, strokeColor);
-        group.getChildren().addAll(bar);
+    public void drawSpecificCityBar(Group group, int position, int population, Color barColor, Color strokeColor) {
+        Bar remove = new Bar(position, 1500, Color.WHITESMOKE, Color.WHITESMOKE);
+        remove.setHeight(800);
+        Bar bar = new Bar(position, population / 50.0, barColor, strokeColor);
+        Names cityName = new Names("" + population, position + 30, 20.0);
+        cityName.setX((population / 50.0) + 10);
+        group.getChildren().addAll(remove, cityName, bar);
     }
 
 

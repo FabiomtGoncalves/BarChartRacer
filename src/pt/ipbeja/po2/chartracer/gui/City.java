@@ -15,6 +15,14 @@ public class City implements Comparable<City>{
         //this.continent = continent;
     }
 
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
+    public void setPopulation(int population) {
+        this.population = population;
+    }
+
     public String getCityName() {
         return cityName;
     }
