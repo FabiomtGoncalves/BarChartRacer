@@ -5,7 +5,6 @@
 
 package pt.ipbeja.po2.chartracer.gui;
 
-
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 

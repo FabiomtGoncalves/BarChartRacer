@@ -145,7 +145,6 @@ public class Model{
         }
     }
 
-
     /**
      * @param group
      * @param path Path of the chosen dataset
@@ -169,7 +168,6 @@ public class Model{
             }
         }
     }
-
 
     /**
      * @param path Path of the chosen dataset
@@ -242,7 +240,6 @@ public class Model{
      * Source: Projeto de IP 2020-2021
      */
 
-
     private double checkFile(String path){
         double divisor = 0;
         if (path.contains("cities.txt")) {
@@ -264,5 +261,4 @@ public class Model{
         }
         return divisor;
     }
-
 }

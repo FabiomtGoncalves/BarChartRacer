@@ -10,8 +10,6 @@ import javafx.scene.shape.Rectangle;
 
 public class Bar extends Rectangle{
 
-    private final int height = 50;
-
     /**
      * @param positionY Y axis position
      * @param width Width of the bar
@@ -21,7 +19,7 @@ public class Bar extends Rectangle{
      */
     public Bar(double positionY, double width, Color barColor, Color strokeColor) {
         this.setY(positionY);
-        this.setHeight(this.height);
+        this.setHeight(50);
         this.setFill(barColor);
         this.setWidth(width);
         this.setStrokeWidth(5);

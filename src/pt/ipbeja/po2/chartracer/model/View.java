@@ -22,5 +22,4 @@ public interface View {
     void generateFile(Stage stage, String[] datasetData);
 
     void drawSpecificCityBar(Group group, int position, int population, Color barcolor, Color strokeColor, double checkFile);
-
 }
