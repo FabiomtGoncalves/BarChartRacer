@@ -8,6 +8,7 @@ package pt.ipbeja.po2.chartracer.model;
 import org.junit.jupiter.api.Test;
 import pt.ipbeja.po2.chartracer.gui.City;
 
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -34,67 +35,51 @@ class ModelTest {
 
     @Test
     void teste2() {
+        int countFY = 0;
+        int countLY = 0;
+        City[] cityArray1500 = new City[12];
+        City[] cityArray2018 = new City[12];
+
+        for (String[] strings : file) {
+            if (strings.length > 2) {
+                if (strings[0].equals("1500")) {
+                    for (int j = 0; j < strings.length; j++) {
+                        firstYear[countFY][j] = strings[j];
+                    }
+                    City city1500 = new City(firstYear[countFY][1], Integer.parseInt(firstYear[countFY][3]));
+                    city1500.setYear(firstYear[countFY][0]);
+                    city1500.setCountry(firstYear[countFY][2]);
+                    city1500.setContinent(firstYear[countFY][4]);
+                    cityArray1500[countFY] = city1500;
+                    countFY++;
+                } else if (strings[0].equals("2018")) {
+                    for (int j = 0; j < strings.length; j++) {
+                        lastYear[countLY][j] = strings[j];
+                    }
+                    City city2018 = new City(lastYear[countLY][1], Integer.parseInt(lastYear[countLY][3]));
+                    city2018.setYear(lastYear[countLY][0]);
+                    city2018.setCountry(lastYear[countLY][2]);
+                    city2018.setContinent(lastYear[countLY][4]);
+                    cityArray2018[countLY] = city2018;
+                    countLY++;
+                }
+            }
+        }
+        Arrays.sort(cityArray1500);
+        Arrays.sort(cityArray2018);
+        //TODO Talvez reverse nos arrays
+        assertEquals(cityArray1500[11].getCityName(), "Beijing");
+        assertEquals(cityArray1500[10].getCityName(), "Vijayanagar");
+        assertEquals(cityArray1500[9].getCityName(), "Cairo");
+        assertEquals(cityArray1500[8].getCityName(), "Tabriz");
+        assertEquals(cityArray1500[7].getCityName(), "Hangzhou");
+        assertEquals(cityArray2018[11].getCityName(), "Tokyo");
+        assertEquals(cityArray2018[10].getCityName(), "Delhi");
+        assertEquals(cityArray2018[9].getCityName(), "Shanghai");
+        assertEquals(cityArray2018[8].getCityName(), "Beijing");
+        assertEquals(cityArray2018[7].getCityName(), "Mumbai");
     }
 
-//    @Test
-//    void teste2() {
-//        int countFY = 0;
-//        int countLY = 0;
-//        String[] tempVar;
-//
-//        for (int i = 0; i < file.length; i++) {
-//            if (file[i].length > 2) {
-//                if (file[i][0].equals("1500")) {
-//                    for (int j = 0; j < file[i].length; j++) {
-//                        firstYear[countFY][j] = file[i][j];
-//                    }
-//                    countFY++;
-//                } else if (file[i][0].equals("2018")) {
-//                    for (int j = 0; j < file[i].length; j++) {
-//                        lastYear[countLY][j] = file[i][j];
-//                    }
-//                    countLY++;
-//                }
-//            }
-//        }
-//        for (int i = 0; i < firstYear.length; i++) {
-//            for (int j = 0; j < firstYear.length; j++) {
-//                model.pop = Integer.parseInt(firstYear[i][3]);
-//                int result = model.compareTo(Integer.parseInt(firstYear[j][3]));
-//
-//                if (result == 1) {
-//                    tempVar = firstYear[j];
-//                    firstYear[j] = firstYear[i];
-//                    firstYear[i] = tempVar;
-//                }
-//            }
-//        }
-//
-//        for (int i = 0; i < lastYear.length; i++) {
-//            for (int j = 0; j < lastYear.length; j++) {
-//                model.pop = Integer.parseInt(lastYear[i][3]);
-//                int result = model.compareTo(Integer.parseInt(lastYear[j][3]));
-//
-//                if (result == 1) {
-//                    tempVar = lastYear[j];
-//                    lastYear[j] = lastYear[i];
-//                    lastYear[i] = tempVar;
-//                }
-//            }
-//        }
-//
-//        assertEquals(firstYear[0][1], "Beijing");
-//        assertEquals(firstYear[1][1], "Vijayanagar");
-//        assertEquals(firstYear[2][1], "Cairo");
-//        assertEquals(firstYear[3][1], "Tabriz");
-//        assertEquals(firstYear[4][1], "Hangzhou");
-//        assertEquals(lastYear[0][1], "Tokyo");
-//        assertEquals(lastYear[1][1], "Delhi");
-//        assertEquals(lastYear[2][1], "Shanghai");
-//        assertEquals(lastYear[3][1], "Beijing");
-//        assertEquals(lastYear[4][1], "Mumbai");
-//    }
-//
 //    @Test
 //    void teste3() throws IOException {
 //        teste2();

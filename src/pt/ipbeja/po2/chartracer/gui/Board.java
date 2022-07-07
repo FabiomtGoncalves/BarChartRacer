@@ -46,9 +46,9 @@ public class Board implements View{
                             @Override
                             public void run() {
                                 try{
-                                    Bar barNew = new Bar(position, population,barColor, strokeColor);
+                                    Bar barNew = new Bar(position, population, barColor, strokeColor);
                                     Names city = new Names(cityName, position + 25, 20.0);
-                                    Names size = new Names("" + population * 75, position + 40, 15.0);
+                                    Names size = new Names("" + population * 25, position + 40, 15.0);
                                     Bar remove = new Bar(removeY, 250, Color.WHITESMOKE, Color.WHITESMOKE);
                                     remove.setHeight(removeX);
                                     remove.setX(dateX);

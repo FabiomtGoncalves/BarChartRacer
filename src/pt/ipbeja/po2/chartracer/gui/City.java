@@ -1,7 +1,7 @@
 package pt.ipbeja.po2.chartracer.gui;
 
 public class City implements Comparable<City>{
-    private int year;
+    private String year;
     private String cityName;
     private String country;
     private int population;
@@ -21,6 +21,30 @@ public class City implements Comparable<City>{
 
     public int getPopulation() {
         return population;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getContinent() {
+        return continent;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public void setContinent(String continent) {
+        this.continent = continent;
     }
 
     @Override

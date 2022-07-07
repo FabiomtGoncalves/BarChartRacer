@@ -57,7 +57,7 @@ public class Model{
 
         for (String[] strings : inputFile) {
             if (strings.length > 2) {
-                City city = new City(strings[1], Integer.parseInt(strings[3]) / 100);
+                City city = new City(strings[1], Integer.parseInt(strings[3]));
                 String date = strings[0];
 
                 List<String> cityList = new ArrayList<>();
@@ -107,7 +107,7 @@ public class Model{
                     data[smallestPos][0] = city.getCityName();
                     data[smallestPos][1]  = String.valueOf(city.getPopulation());
 
-                    view.draw(city.getPopulation(), group, position, city.getCityName(),
+                    view.draw(city.getPopulation() / 25, group, position, city.getCityName(),
                             barColor, strokeColor, textArray.get(smallestPos), date);
                 }
             }
