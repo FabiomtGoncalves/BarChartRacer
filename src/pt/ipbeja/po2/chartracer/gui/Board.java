@@ -28,17 +28,14 @@ public class Board implements View{
     private final int removeY = 800;
     private final int removeX = 110;
 
-
     public Board(Model model) {
         model.setView(this);
     }
-
 
     @Override
     public void draw(int population, Group group, double position, String cityName, Color barColor, Color strokeColor, String date, double checkFile) {
         thread(population,group,position,  cityName,  barColor,  strokeColor,  date,  1, checkFile);
     }
-
 
     @Override
     public void drawTitle(Group group, String title) {
@@ -53,7 +50,6 @@ public class Board implements View{
         Names size = new Names("" + population, position + 40, 15.0);
         group.getChildren().addAll(bar, names, size);
     }
-
 
     @Override
     public void generateFile(Stage stage, String[] datasetData) {
@@ -76,12 +72,10 @@ public class Board implements View{
         group.getChildren().addAll(remove, cityName, bar);
     }
 
-
     @Override
     public void drawFinal(int population, Group group, double position, String cityName, Color barColor, Color strokeColor, String date, int i, double checkFile) {
         thread(population,group,position,  cityName,  barColor,  strokeColor,  date,  i, checkFile);
     }
-
 
     private void thread(int population, Group group, double position, String cityName, Color barColor, Color strokeColor, String date, int i, double checkFile){
         Service<Void> service = new Service<Void>() {
@@ -128,5 +122,4 @@ public class Board implements View{
         };
         service.start();
     }
-
 }

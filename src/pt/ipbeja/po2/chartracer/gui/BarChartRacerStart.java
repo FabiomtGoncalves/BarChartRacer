@@ -24,7 +24,6 @@ public class BarChartRacerStart extends Application{
     private final int sceneW = 800;
     private final int sceneH = 600;
 
-
     public static void main(String[] args) {
         launch(args);
     }
