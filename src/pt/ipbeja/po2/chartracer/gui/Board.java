@@ -28,21 +28,46 @@ public class Board implements View{
     private final int removeY = 800;
     private final int removeX = 110;
 
+
     public Board(Model model) {
         model.setView(this);
     }
 
+    /**
+     * @param population Number of population
+     * @param group
+     * @param position Position where the bar will be drawn
+     * @param cityName Name
+     * @param barColor Color of the bar
+     * @param strokeColor Color of the bar stroke
+     * @param date Date
+     * Draws and animates the bars, name and date
+     */
     @Override
     public void draw(int population, Group group, double position, String cityName, Color barColor, Color strokeColor, String date, double checkFile) {
         thread(population,group,position,  cityName,  barColor,  strokeColor,  date,  1, checkFile);
     }
 
+    /**
+     * @param group Number of population
+     * @param title Title of the chart
+     * Draws the chart title
+     */
     @Override
     public void drawTitle(Group group, String title) {
         Names titleName = new Names(title, 0, 30.0);
         group.getChildren().add(titleName);
     }
 
+    /**
+     * @param group Number of population
+     * @param position Position where the bar will be drawn
+     * @param population Number of population
+     * @param name Name
+     * @param barColor Color of the Bar
+     * @param strokeColor Color of the Bar Stroke
+     * Draws the chart title
+     */
     @Override
     public void drawBiggestInSpecificYear(Group group, int position, int population, String name, Color barColor, Color strokeColor, double checkFile) {
         Bar bar = new Bar(position, population / checkFile, barColor, strokeColor);
@@ -51,6 +76,11 @@ public class Board implements View{
         group.getChildren().addAll(bar, names, size);
     }
 
+    /**
+     * @param stage Number of population
+     * @param datasetData Title of the chart
+     * Draws the chart title
+     */
     @Override
     public void generateFile(Stage stage, String[] datasetData) {
         FileChooser chooser = new FileChooser();
@@ -62,6 +92,14 @@ public class Board implements View{
         writeToFile.write(path2, List.of(datasetData));
     }
 
+    /**
+     * @param group Number of population
+     * @param position Position where the bar will be drawn
+     * @param population Number of population
+     * @param barColor Color of the Bar
+     * @param strokeColor Color of the Bar Stroke
+     * Draws the chart title
+     */
     @Override
     public void drawSpecificCityBar(Group group, int position, int population, Color barColor, Color strokeColor, double checkFile) {
         Bar remove = new Bar(position, 1500, Color.WHITESMOKE, Color.WHITESMOKE);
@@ -72,11 +110,16 @@ public class Board implements View{
         group.getChildren().addAll(remove, cityName, bar);
     }
 
+
     @Override
     public void drawFinal(int population, Group group, double position, String cityName, Color barColor, Color strokeColor, String date, int i, double checkFile) {
         thread(population,group,position,  cityName,  barColor,  strokeColor,  date,  i, checkFile);
     }
 
+
+    /**
+     * https://stackoverflow.com/questions/16708931/javafx-working-with-threads-and-gui
+     */
     private void thread(int population, Group group, double position, String cityName, Color barColor, Color strokeColor, String date, int i, double checkFile){
         Service<Void> service = new Service<Void>() {
             @Override
@@ -122,4 +165,5 @@ public class Board implements View{
         };
         service.start();
     }
+
 }
