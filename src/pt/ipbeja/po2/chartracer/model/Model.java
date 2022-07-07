@@ -83,7 +83,6 @@ public class Model{
                 }
 
                 for (int j = 0; j < numOfObjs; j++) {
-
                     if (smallest > cityData.get(j).getPopulation() && !cityData.get(j).getCityName().contains(city.getCityName())) {
                         smallest = cityData.get(j).getPopulation();
                         smallestPos = j;
@@ -110,9 +109,7 @@ public class Model{
             }
         }
 
-
         for (int i = 0; i < cityData.size(); i++) {
-
             view.draw(cityData.get(i).getPopulation(), group, rectArray.get(i).getY(),
                     cityData.get(i).getCityName(), Color.PINK, strokeColor, date);
 
@@ -227,7 +224,6 @@ public class Model{
                     Integer.parseInt(strings[0]);
                     numDataSets++;
                 } catch (NumberFormatException ignored) {
-
                 }
             }
         }
@@ -237,9 +233,7 @@ public class Model{
                 "Maximum value considering all data sets: " + max, "Minimum value considering all data sets: " + min};
 
         try {
-
             view.generateFile(stage, datasetData);
-
         } catch (Exception e) {
             System.out.println("Opção de guardar ficheiro cancelada.");
         }
